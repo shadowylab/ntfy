@@ -2,7 +2,7 @@
 name = "ntfy"
 version = "0.1.0"
 edition = "2021"
-desctiption = "ntfy rust sdk"
+description = "ntfy rust sdk"
 authors = ["Yuki Kishimoto <yukikishimoto@proton.me>"]
 license = "MIT"
 keywords = ["ntfy", "ntfy.sh", "push notification", "notifications"]
