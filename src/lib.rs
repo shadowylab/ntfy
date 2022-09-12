@@ -27,6 +27,28 @@ pub struct Payload {
     pub title: Option<String>,
 }
 
+impl Payload {
+    pub fn new(topic: &str, message: &str) -> Self {
+        Self {
+            topic: topic.into(),
+            message: message.into(),
+            priority: Priority::default(),
+            title: None,
+        }
+    }
+
+    pub fn priority(self, priority: Priority) -> Self {
+        Self { priority, ..self }
+    }
+
+    pub fn title(self, title: &str) -> Self {
+        Self {
+            title: Some(title.into()),
+            ..self
+        }
+    }
+}
+
 #[derive(Debug)]
 pub enum Error {
     FailedToDeserialize(String),
