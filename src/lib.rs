@@ -13,7 +13,7 @@ mod priority;
 pub use priority::Priority;
 
 #[derive(Clone)]
-pub struct Client {
+pub struct Dispatcher {
     url: String,
     client: ReqwestClient,
 }
@@ -48,7 +48,7 @@ pub enum Error {
     UnhandledServerError,
 }
 
-impl Client {
+impl Dispatcher {
     pub fn new(url: &str, proxy: Option<&str>) -> Result<Self, Error> {
         let mut client = ReqwestClient::builder();
 
@@ -62,7 +62,7 @@ impl Client {
         })
     }
 
-    pub fn publish(&self, payload: &Payload) -> Result<(), Error> {
+    pub fn send(&self, payload: &Payload) -> Result<(), Error> {
         log::debug!("{:?}", payload);
         request(self.client.post(&self.url).json(payload))
     }
