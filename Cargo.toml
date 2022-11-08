@@ -8,7 +8,7 @@ license = "MIT"
 homepage = "https://github.com/yukibtc/ntfy-sdk"
 repository = "https://github.com/yukibtc/ntfy-sdk.git"
 
-keywords = ["ntfy", "ntfy.sh", "push notification", "notifications"]
+keywords = ["ntfy", "push notification", "notifications"]
 
 [dependencies]
 log = "0.4"
