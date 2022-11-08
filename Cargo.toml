@@ -7,7 +7,6 @@ authors = ["Yuki Kishimoto <yukikishimoto@proton.me>"]
 license = "MIT"
 homepage = "https://github.com/yukibtc/ntfy-sdk"
 repository = "https://github.com/yukibtc/ntfy-sdk.git"
-documentation = "https://docs.rs/ntfy"
 keywords = ["ntfy", "notifications", "sdk"]
 
 [features]
