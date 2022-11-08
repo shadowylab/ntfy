@@ -4,13 +4,20 @@
 #[macro_use]
 extern crate serde;
 
+#[cfg(not(feature = "blocking"))]
+use reqwest::Client as ReqwestClient;
+#[cfg(not(feature = "blocking"))]
+use reqwest::RequestBuilder;
+
+#[cfg(feature = "blocking")]
 use reqwest::blocking::Client as ReqwestClient;
+#[cfg(feature = "blocking")]
 use reqwest::blocking::RequestBuilder;
 use reqwest::{Proxy, StatusCode};
 
 mod priority;
 
-pub use priority::Priority;
+pub use self::priority::Priority;
 
 #[derive(Clone)]
 pub struct Dispatcher {
@@ -28,6 +35,7 @@ pub struct Payload {
 }
 
 impl Payload {
+    /// Create new payload
     pub fn new(topic: &str, message: &str) -> Self {
         Self {
             topic: topic.into(),
@@ -37,10 +45,12 @@ impl Payload {
         }
     }
 
+    /// Set priority
     pub fn priority(self, priority: Priority) -> Self {
         Self { priority, ..self }
     }
 
+    /// Set title
     pub fn title(self, title: &str) -> Self {
         Self {
             title: Some(title.into()),
@@ -71,6 +81,7 @@ pub enum Error {
 }
 
 impl Dispatcher {
+    /// Create new dispatcher
     pub fn new(url: &str, proxy: Option<&str>) -> Result<Self, Error> {
         let mut client = ReqwestClient::builder();
 
@@ -84,12 +95,54 @@ impl Dispatcher {
         })
     }
 
+    /// Send payload to ntfy server
+    #[cfg(not(feature = "blocking"))]
+    pub async fn send(&self, payload: &Payload) -> Result<(), Error> {
+        log::debug!("{:?}", payload);
+        request(self.client.post(&self.url).json(payload)).await
+    }
+
+    /// Send payload to ntfy server
+    #[cfg(feature = "blocking")]
     pub fn send(&self, payload: &Payload) -> Result<(), Error> {
         log::debug!("{:?}", payload);
         request(self.client.post(&self.url).json(payload))
     }
 }
 
+#[cfg(not(feature = "blocking"))]
+async fn request(req: RequestBuilder) -> Result<(), Error> {
+    let res = req.send().await?;
+
+    match StatusCode::as_u16(&res.status()) {
+        0_u16..=399_u16 => {
+            let res = res.text().await?;
+
+            if res.is_empty() {
+                return Err(Error::EmptyResponse);
+            }
+
+            Ok(())
+        }
+        400 => Err(Error::BadRequest),
+        401 => Err(Error::Unauthorized),
+        402 => Err(Error::UnhandledClientError),
+        403 => Err(Error::Forbidden),
+        404 => Err(Error::NotFound),
+        405 => Err(Error::MethodNotAllowed),
+        406_u16..=428_u16 => Err(Error::UnhandledClientError),
+        429 => Err(Error::TooManyRequests),
+        430_u16..=499_u16 => Err(Error::UnhandledClientError),
+        500 => Err(Error::InternalServerError),
+        501 => Err(Error::NotImplemented),
+        502 => Err(Error::BadGateway),
+        503 => Err(Error::ServiceUnavailable),
+        504 => Err(Error::GatewayTimeout),
+        _ => Err(Error::UnhandledServerError),
+    }
+}
+
+#[cfg(feature = "blocking")]
 fn request(req: RequestBuilder) -> Result<(), Error> {
     let res = req.send()?;
 
