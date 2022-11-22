@@ -5,7 +5,7 @@ use serde::de::Error;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 #[repr(u8)]
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub enum Priority {
     Max = 5,
     High = 4,

@@ -10,9 +10,7 @@ pub mod dispatcher;
 pub mod error;
 mod net;
 pub mod payload;
-pub mod priority;
 
 pub use self::dispatcher::{Auth, Dispatcher, DispatcherBuilder};
 pub use self::error::NtfyError;
-pub use self::payload::Payload;
-pub use self::priority::Priority;
+pub use self::payload::{Payload, Priority};
