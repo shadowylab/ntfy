@@ -7,8 +7,10 @@
 ## Example
 
 ```toml
-ntfy = "0.2"
+chrono = "0.4"
+ntfy = "0.3"
 tokio = { version = "1", features = ["full"] }
+url = "2"
 ```
 
 ```rust,no_run
