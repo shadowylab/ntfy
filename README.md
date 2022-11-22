@@ -12,11 +12,17 @@ tokio = { version = "1", features = ["full"] }
 ```
 
 ```rust,no_run
-use ntfy::{Dispatcher, Payload, Priority};
+use ntfy::{Dispatcher, Payload, Priority, Auth};
 
 #[tokio::main]
 async fn main() {
-    let dispatcher = Dispatcher::new("https://ntfy.sh", Some("socks5h://127.0.0.1:9050")).unwrap();
+    let auth = Auth::new("username", "password");
+    let dispatcher = Dispatcher::new(
+        "https://ntfy.sh",
+        Some(auth),
+        Some("socks5h://127.0.0.1:9050"),
+    )
+    .unwrap();
 
     let payload = Payload::new("mytopic", "Hello, World!")
         .title("Alert") // Add optional title
@@ -26,25 +32,15 @@ async fn main() {
 }
 ```
 
-## Blocking example
+More examples can be found in the [examples](./examples/) directory.
 
-```toml
-ntfy = { version = "0.1", features = ["blocking"] }
-```
+## Crate Feature Flags
 
-```rust,no_run
-use ntfy::{Dispatcher, Payload, Priority};
+The following crate feature flags are available:
 
-fn main() {
-    let dispatcher = Dispatcher::new("https://ntfy.sh", Some("socks5h://127.0.0.1:9050")).unwrap();
-
-    let payload = Payload::new("mytopic", "Hello, World!")
-        .title("Alert") // Add optional title
-        .priority(Priority::High); // Edit priority
-
-    dispatcher.send(&payload).unwrap();
-}
-```
+| Feature             | Default | Description                                                                                                                |
+| ------------------- | :-----: | -------------------------------------------------------------------------------------------------------------------------- |
+| `blocking`          |   No    | Needed if you want to use this library in not async/await context                                                          |
 
 ## License
 

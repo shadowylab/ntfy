@@ -1,11 +1,17 @@
 // Copyright (c) 2022 Yuki Kishimoto
 // Distributed under the MIT software license
 
-use ntfy::{Dispatcher, Payload, Priority};
+use ntfy::{Auth, Dispatcher, Payload, Priority};
 
 #[tokio::main]
 async fn main() {
-    let dispatcher = Dispatcher::new("https://ntfy.sh", Some("socks5h://127.0.0.1:9050")).unwrap();
+    let auth = Auth::new("username", "password");
+    let dispatcher = Dispatcher::new(
+        "https://ntfy.sh",
+        Some(auth),
+        Some("socks5h://127.0.0.1:9050"),
+    )
+    .unwrap();
 
     /* let payload = Payload {
         topic: String::from("mytopic"),

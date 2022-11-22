@@ -6,6 +6,7 @@
 #[macro_use]
 extern crate serde;
 
+use reqwest::header::{HeaderMap, HeaderValue, InvalidHeaderValue};
 #[cfg(not(feature = "blocking"))]
 use reqwest::Client as ReqwestClient;
 #[cfg(not(feature = "blocking"))]
@@ -18,8 +19,12 @@ use reqwest::blocking::RequestBuilder;
 use reqwest::{Proxy, StatusCode};
 use thiserror::Error;
 
+mod auth;
+mod payload;
 mod priority;
 
+pub use self::auth::Auth;
+pub use self::payload::Payload;
 pub use self::priority::Priority;
 
 #[derive(Clone)]
@@ -28,46 +33,14 @@ pub struct Dispatcher {
     client: ReqwestClient,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct Payload {
-    pub topic: String,
-    pub message: String,
-    #[serde(with = "priority")]
-    pub priority: Priority,
-    pub title: Option<String>,
-}
-
-impl Payload {
-    /// Create new payload
-    pub fn new(topic: &str, message: &str) -> Self {
-        Self {
-            topic: topic.into(),
-            message: message.into(),
-            priority: Priority::default(),
-            title: None,
-        }
-    }
-
-    /// Set priority
-    pub fn priority(self, priority: Priority) -> Self {
-        Self { priority, ..self }
-    }
-
-    /// Set title
-    pub fn title(self, title: &str) -> Self {
-        Self {
-            title: Some(title.into()),
-            ..self
-        }
-    }
-}
-
 #[derive(Debug, Error)]
 pub enum NtfyError {
     #[error("Failed to deserialize: {0}")]
     FailedToDeserialize(String),
     #[error("Reqwest error: {0}")]
     ReqwestError(reqwest::Error),
+    #[error("Invalid header value: {0}")]
+    InvalidHeaderValue(InvalidHeaderValue),
     #[error("Empty Response")]
     EmptyResponse,
     #[error("Bad Result")]
@@ -102,8 +75,17 @@ pub enum NtfyError {
 
 impl Dispatcher {
     /// Create new dispatcher
-    pub fn new(url: &str, proxy: Option<&str>) -> Result<Self, NtfyError> {
+    pub fn new(url: &str, auth: Option<Auth>, proxy: Option<&str>) -> Result<Self, NtfyError> {
         let mut client = ReqwestClient::builder();
+
+        if let Some(auth) = auth {
+            let mut headers = HeaderMap::new();
+            let mut auth_value = HeaderValue::from_str(&format!("Basic {}", auth.as_base64()))?;
+            auth_value.set_sensitive(true);
+            headers.insert("Authorization", auth_value);
+
+            client = client.default_headers(headers);
+        }
 
         if let Some(proxy) = proxy {
             client = client.proxy(Proxy::all(proxy)?);
@@ -197,5 +179,11 @@ fn request(req: RequestBuilder) -> Result<(), Error> {
 impl From<reqwest::Error> for NtfyError {
     fn from(err: reqwest::Error) -> Self {
         NtfyError::ReqwestError(err)
+    }
+}
+
+impl From<InvalidHeaderValue> for NtfyError {
+    fn from(err: InvalidHeaderValue) -> Self {
+        NtfyError::InvalidHeaderValue(err)
     }
 }
