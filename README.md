@@ -7,7 +7,7 @@
 ## Example
 
 ```toml
-ntfy = "0.1"
+ntfy = "0.2"
 tokio = { version = "1", features = ["full"] }
 ```
 
