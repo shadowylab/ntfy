@@ -12,23 +12,22 @@ tokio = { version = "1", features = ["full"] }
 ```
 
 ```rust,no_run
-use ntfy::{Dispatcher, Payload, Priority, Auth};
+use ntfy::{Auth, Dispatcher, NtfyError, Payload, Priority};
 
 #[tokio::main]
-async fn main() {
-    let auth = Auth::new("username", "password");
-    let dispatcher = Dispatcher::new(
-        "https://ntfy.sh",
-        Some(auth),
-        Some("socks5h://127.0.0.1:9050"),
-    )
-    .unwrap();
+async fn main() -> Result<(), NtfyError> {
+    let dispatcher = Dispatcher::builder("https://ntfy.sh")
+        .credentials(Auth::new("username", "password")) // Add optional credentials
+        .proxy("socks5h://127.0.0.1:9050") // Add optional proxy
+        .build()?; // Build dispatcher
 
     let payload = Payload::new("mytopic", "Hello, World!")
         .title("Alert") // Add optional title
         .priority(Priority::High); // Edit priority
 
     dispatcher.send(&payload).await.unwrap();
+
+    Ok(())
 }
 ```
 
