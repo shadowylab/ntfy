@@ -24,7 +24,7 @@ pub struct Dispatcher {
 
 impl Dispatcher {
     /// Create new dispatcher
-    pub fn new<S>(url: S, auth: Option<Auth>, proxy: Option<&str>) -> Result<Self, NtfyError>
+    pub fn new<S>(url: S, auth: Option<Auth>, proxy: Option<S>) -> Result<Self, NtfyError>
     where
         S: Into<String>,
     {

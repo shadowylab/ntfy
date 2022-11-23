@@ -6,6 +6,9 @@
 #[macro_use]
 extern crate serde;
 
+pub use chrono::{Duration, Local};
+pub use url::Url;
+
 pub mod dispatcher;
 pub mod error;
 mod net;

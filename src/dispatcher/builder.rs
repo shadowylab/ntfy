@@ -10,6 +10,7 @@ use url::Url;
 use super::{Auth, Dispatcher};
 use crate::error::NtfyError;
 
+#[derive(Clone)]
 pub struct DispatcherBuilder {
     url: String,
     auth: Option<Auth>,
