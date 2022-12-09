@@ -3,9 +3,9 @@
 
 use std::str::FromStr;
 
-use reqwest::header::{HeaderMap, HeaderValue};
 #[cfg(feature = "blocking")]
 use reqwest::blocking::ClientBuilder;
+use reqwest::header::{HeaderMap, HeaderValue};
 #[cfg(not(feature = "blocking"))]
 use reqwest::ClientBuilder;
 use reqwest::Proxy;

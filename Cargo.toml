@@ -27,6 +27,13 @@ url = { version = "2", features = ["serde"] }
 [dev-dependencies]
 tokio = { version = "1", features = ["full"] }
 
+[[example]]
+name = "client"
+
+[[example]]
+name = "blocking"
+required-features = ["blocking"]
+
 [profile.release]
 lto = true
 codegen-units = 1
