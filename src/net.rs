@@ -42,7 +42,7 @@ pub(crate) async fn request(req: RequestBuilder) -> Result<(), NtfyError> {
 }
 
 #[cfg(feature = "blocking")]
-pub(crate) fn request(req: RequestBuilder) -> Result<(), Error> {
+pub(crate) fn request(req: RequestBuilder) -> Result<(), NtfyError> {
     let res = req.send()?;
 
     match StatusCode::as_u16(&res.status()) {
