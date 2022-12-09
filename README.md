@@ -1,5 +1,9 @@
 # Ntfy SDK
 
+[![crates.io](https://img.shields.io/crates/v/ntfy.svg)](https://crates.io/crates/ntfy)
+[![Documentation](https://docs.rs/ntfy/badge.svg)](https://docs.rs/ntfy)
+[![MIT](https://img.shields.io/crates/l/ntfy.svg)](LICENSE)
+
 ## Description
 
 [Ntfy](https://ntfy.sh) client library to send notifications from [Rust](https://rust-lang.org).
