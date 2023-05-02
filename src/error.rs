@@ -9,11 +9,11 @@ pub enum NtfyError {
     #[error("Failed to deserialize: {0}")]
     FailedToDeserialize(String),
     #[error("Reqwest error: {0}")]
-    ReqwestError(reqwest::Error),
+    ReqwestError(#[from] reqwest::Error),
     #[error("Invalid header value: {0}")]
-    InvalidHeaderValue(InvalidHeaderValue),
+    InvalidHeaderValue(#[from] InvalidHeaderValue),
     #[error("Invalid url: {0}")]
-    Url(url::ParseError),
+    Url(#[from] url::ParseError),
     #[error("Empty Response")]
     EmptyResponse,
     #[error("Bad Result")]
@@ -44,22 +44,4 @@ pub enum NtfyError {
     GatewayTimeout,
     #[error("Unhandled Server Error")]
     UnhandledServerError,
-}
-
-impl From<reqwest::Error> for NtfyError {
-    fn from(err: reqwest::Error) -> Self {
-        NtfyError::ReqwestError(err)
-    }
-}
-
-impl From<InvalidHeaderValue> for NtfyError {
-    fn from(err: InvalidHeaderValue) -> Self {
-        NtfyError::InvalidHeaderValue(err)
-    }
-}
-
-impl From<url::ParseError> for NtfyError {
-    fn from(err: url::ParseError) -> Self {
-        NtfyError::Url(err)
-    }
 }
