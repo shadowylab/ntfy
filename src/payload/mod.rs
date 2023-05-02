@@ -70,12 +70,12 @@ impl Payload {
     }
 
     /// Set tags
-    pub fn tags<V>(self, tags: V) -> Self
+    pub fn tags<S>(self, tags: Vec<S>) -> Self
     where
-        V: Into<Vec<String>>,
+        S: Into<String>,
     {
         Self {
-            tags: Some(tags.into()),
+            tags: Some(tags.into_iter().map(|t| t.into()).collect()),
             ..self
         }
     }
