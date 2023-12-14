@@ -19,14 +19,15 @@ fn main() -> Result<(), NtfyError> {
     );
 
     let payload = Payload::new("mytopic")
-        .message("Hello, World!") // Add optional message
+        .message("Hello, **World**!") // Add optional message
         .title("Alert") // Add optiona title
-        .tags(vec!["warning".into()]) // Add optional tags
+        .tags(["warning"]) // Add optional tags
         .priority(Priority::High) // Edit priority
-        .actions(vec![action]) // Add optional actions
+        .actions([action]) // Add optional actions
         .click(Url::parse("https://example.com")?) // Add optional clickable url
         .attach(Url::parse("https://example.com/file.jpg")?) // Add optional url attachment
-        .delay(Local::now() + Duration::minutes(1)); // Add optional delay
+        .delay(Local::now() + Duration::minutes(1)) // Add optional delay
+        .markdown(true); // Use markdown
 
     dispatcher.send(&payload).unwrap();
 

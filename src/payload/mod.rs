@@ -24,6 +24,8 @@ pub struct Payload {
     pub filename: Option<String>,
     pub delay: Option<String>,
     pub email: Option<String>,
+    #[serde(skip)]
+    pub markdown: bool,
 }
 
 impl Payload {
@@ -44,6 +46,7 @@ impl Payload {
             filename: None,
             delay: None,
             email: None,
+            markdown: false,
         }
     }
 
@@ -70,8 +73,9 @@ impl Payload {
     }
 
     /// Set tags
-    pub fn tags<S>(self, tags: Vec<S>) -> Self
+    pub fn tags<I, S>(self, tags: I) -> Self
     where
+        I: IntoIterator<Item = S>,
         S: Into<String>,
     {
         Self {
@@ -86,9 +90,12 @@ impl Payload {
     }
 
     /// Set actions
-    pub fn actions(self, actions: Vec<Action>) -> Self {
+    pub fn actions<I>(self, actions: I) -> Self
+    where
+        I: IntoIterator<Item = Action>,
+    {
         Self {
-            actions: Some(actions),
+            actions: Some(actions.into_iter().collect()),
             ..self
         }
     }
@@ -137,5 +144,13 @@ impl Payload {
             email: Some(email.into()),
             ..self
         }
+    }
+
+    /// Use markdown
+    ///
+    /// <https://docs.ntfy.sh/publish/#markdown-formatting>
+    pub fn markdown(mut self, markdown: bool) -> Self {
+        self.markdown = markdown;
+        self
     }
 }
