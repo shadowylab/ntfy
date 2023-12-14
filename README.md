@@ -37,14 +37,15 @@ async fn main() -> Result<(), NtfyError> {
     );
 
     let payload = Payload::new("mytopic")
-        .message("Hello, World!") // Add optional message
+        .message("Hello, **World**!") // Add optional message
         .title("Alert") // Add optiona title
         .tags(vec!["warning".into()]) // Add optional tags
         .priority(Priority::High) // Edit priority
-        .actions(vec![action]) // Add optional actions
+        .actions([action]) // Add optional actions
         .click(Url::parse("https://example.com")?) // Add optional clickable url
         .attach(Url::parse("https://example.com/file.jpg")?) // Add optional url attachment
-        .delay(Local::now() + Duration::minutes(1)); // Add optional delay
+        .delay(Local::now() + Duration::minutes(1)) // Add optional delay
+        .markdown(true); // Use markdown
 
     dispatcher.send(&payload).await.unwrap();
 
@@ -65,3 +66,9 @@ The following crate feature flags are available:
 ## License
 
 This project is distributed under the MIT software license - see the [LICENSE](LICENSE) file for details
+
+## Donations
+
+⚡ Tips: <https://getalby.com/p/yuki>
+
+⚡ Lightning Address: yuki@getalby.com

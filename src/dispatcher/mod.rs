@@ -52,13 +52,21 @@ impl Dispatcher {
     #[cfg(not(feature = "blocking"))]
     pub async fn send(&self, payload: &Payload) -> Result<(), NtfyError> {
         log::debug!("{:?}", payload);
-        request(self.client.post(self.url.as_str()).json(payload)).await
+        let mut builder = self.client.post(self.url.as_str());
+        if payload.markdown {
+            builder = builder.header("Markdown", "yes");
+        }
+        request(builder.json(payload)).await
     }
 
     /// Send payload to ntfy server
     #[cfg(feature = "blocking")]
     pub fn send(&self, payload: &Payload) -> Result<(), NtfyError> {
         log::debug!("{:?}", payload);
-        request(self.client.post(self.url.as_str()).json(payload))
+        let mut builder = self.client.post(self.url.as_str());
+        if payload.markdown {
+            builder = builder.header("Markdown", "yes");
+        }
+        request(builder.json(payload))
     }
 }
