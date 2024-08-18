@@ -2,11 +2,11 @@
 name = "ntfy"
 version = "0.4.0"
 edition = "2021"
-description = "ntfy rust sdk"
-authors = ["Yuki Kishimoto <yukikishimoto@proton.me>"]
+description = "Library for sending notifications over ntfy"
+authors = ["Yuki Kishimoto <yukikishimoto@protonmail.com>"]
 license = "MIT"
-homepage = "https://github.com/yukibtc/ntfy-sdk"
-repository = "https://github.com/yukibtc/ntfy-sdk.git"
+homepage = "https://github.com/shadowylab/ntfy"
+repository = "https://github.com/shadowylab/ntfy.git"
 readme = "README.md"
 keywords = ["ntfy", "notifications", "sdk"]
 
