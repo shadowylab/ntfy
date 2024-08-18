@@ -41,6 +41,7 @@ impl Dispatcher {
         builder.build()
     }
 
+    #[inline]
     pub fn builder<S>(url: S) -> DispatcherBuilder
     where
         S: Into<String>,
@@ -51,7 +52,6 @@ impl Dispatcher {
     /// Send payload to ntfy server
     #[cfg(not(feature = "blocking"))]
     pub async fn send(&self, payload: &Payload) -> Result<(), NtfyError> {
-        tracing::debug!("{:?}", payload);
         let mut builder = self.client.post(self.url.as_str());
         if payload.markdown {
             builder = builder.header("Markdown", "yes");
@@ -62,7 +62,6 @@ impl Dispatcher {
     /// Send payload to ntfy server
     #[cfg(feature = "blocking")]
     pub fn send(&self, payload: &Payload) -> Result<(), NtfyError> {
-        tracing::debug!("{:?}", payload);
         let mut builder = self.client.post(self.url.as_str());
         if payload.markdown {
             builder = builder.header("Markdown", "yes");
