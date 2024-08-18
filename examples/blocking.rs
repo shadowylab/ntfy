@@ -1,7 +1,6 @@
 // Copyright (c) 2022 Yuki Kishimoto
 // Distributed under the MIT software license
 
-use chrono::{Duration, Local};
 use ntfy::payload::{Action, ActionType};
 use ntfy::{Auth, Dispatcher, NtfyError, Payload, Priority};
 use url::Url;
@@ -26,7 +25,7 @@ fn main() -> Result<(), NtfyError> {
         .actions([action]) // Add optional actions
         .click(Url::parse("https://example.com")?) // Add optional clickable url
         .attach(Url::parse("https://example.com/file.jpg")?) // Add optional url attachment
-        .delay(Local::now() + Duration::minutes(1)) // Add optional delay
+        .delay(1639194738) // Add optional delay
         .markdown(true); // Use markdown
 
     dispatcher.send(&payload).unwrap();

@@ -1,7 +1,6 @@
 // Copyright (c) 2022 Yuki Kishimoto
 // Distributed under the MIT software license
 
-use chrono::{DateTime, Local};
 use url::Url;
 
 pub mod action;
@@ -22,7 +21,8 @@ pub struct Payload {
     pub click: Option<Url>,
     pub attach: Option<Url>,
     pub filename: Option<String>,
-    pub delay: Option<String>,
+    /// Delay (UNIX timestamp)
+    pub delay: Option<u64>,
     pub email: Option<String>,
     #[serde(skip)]
     pub markdown: bool,
@@ -122,8 +122,8 @@ impl Payload {
 
     /// Set delay
     #[inline]
-    pub fn delay(mut self, time: DateTime<Local>) -> Self {
-        self.delay = Some(time.timestamp().to_string());
+    pub fn delay(mut self, timestamp: u64) -> Self {
+        self.delay = Some(timestamp);
         self
     }
 

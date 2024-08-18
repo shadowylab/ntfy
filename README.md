@@ -11,14 +11,12 @@
 ## Example
 
 ```toml
-chrono = "0.4"
 ntfy = "0.4"
 tokio = { version = "1", features = ["full"] }
 url = "2"
 ```
 
 ```rust,no_run
-use chrono::{Duration, Local};
 use ntfy::payload::{Action, ActionType};
 use ntfy::{Auth, Dispatcher, NtfyError, Payload, Priority};
 use url::Url;
@@ -44,7 +42,7 @@ async fn main() -> Result<(), NtfyError> {
         .actions([action]) // Add optional actions
         .click(Url::parse("https://example.com")?) // Add optional clickable url
         .attach(Url::parse("https://example.com/file.jpg")?) // Add optional url attachment
-        .delay(Local::now() + Duration::minutes(1)) // Add optional delay
+        .delay(1639194738) // Add optional delay
         .markdown(true); // Use markdown
 
     dispatcher.send(&payload).await.unwrap();
