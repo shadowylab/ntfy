@@ -20,22 +20,15 @@ impl Default for Priority {
     }
 }
 
-pub fn serialize<S>(p: &Priority, s: S) -> Result<S::Ok, S::Error>
+pub(super) fn serialize<S>(p: &Priority, s: S) -> Result<S::Ok, S::Error>
 where
     S: Serializer,
 {
-    let p: u8 = match p {
-        Priority::Max => 5,
-        Priority::High => 4,
-        Priority::Default => 3,
-        Priority::Low => 2,
-        Priority::Min => 1,
-    };
-
+    let p: u8 = *p as u8;
     p.serialize(s)
 }
 
-pub fn deserialize<'de, D>(d: D) -> Result<Priority, D::Error>
+pub(super) fn deserialize<'de, D>(d: D) -> Result<Priority, D::Error>
 where
     D: Deserializer<'de>,
 {
@@ -45,6 +38,6 @@ where
         3 => Ok(Priority::Default),
         2 => Ok(Priority::Low),
         1 => Ok(Priority::Min),
-        o => Err(D::Error::custom(format_args!("Invalid value {}", o))),
+        o => Err(Error::custom(format_args!("Invalid value: {}", o))),
     }
 }
