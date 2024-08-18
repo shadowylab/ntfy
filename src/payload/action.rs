@@ -36,18 +36,16 @@ impl Action {
     }
 
     /// Set clear
-    pub fn clear(self, clear: bool) -> Self {
-        Self {
-            clear: Some(clear),
-            ..self
-        }
+    #[inline]
+    pub fn clear(mut self, clear: bool) -> Self {
+        self.clear = Some(clear);
+        self
     }
 
     /// Set body
-    pub fn body(self, body: Value) -> Self {
-        Self {
-            body: Some(body),
-            ..self
-        }
+    #[inline]
+    pub fn body(mut self, body: Value) -> Self {
+        self.body = Some(body);
+        self
     }
 }

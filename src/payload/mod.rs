@@ -51,104 +51,96 @@ impl Payload {
     }
 
     /// Set message
-    pub fn message<S>(self, msg: S) -> Self
+    #[inline]
+    pub fn message<S>(mut self, msg: S) -> Self
     where
         S: Into<String>,
     {
-        Self {
-            message: msg.into(),
-            ..self
-        }
+        self.message = msg.into();
+        self
     }
 
     /// Set title
-    pub fn title<S>(self, title: S) -> Self
+    #[inline]
+    pub fn title<S>(mut self, title: S) -> Self
     where
         S: Into<String>,
     {
-        Self {
-            title: Some(title.into()),
-            ..self
-        }
+        self.title = Some(title.into());
+        self
     }
 
     /// Set tags
-    pub fn tags<I, S>(self, tags: I) -> Self
+    pub fn tags<I, S>(mut self, tags: I) -> Self
     where
         I: IntoIterator<Item = S>,
         S: Into<String>,
     {
-        Self {
-            tags: Some(tags.into_iter().map(|t| t.into()).collect()),
-            ..self
-        }
+        self.tags = Some(tags.into_iter().map(|t| t.into()).collect());
+        self
     }
 
     /// Set priority
-    pub fn priority(self, priority: Priority) -> Self {
-        Self { priority, ..self }
+    #[inline]
+    pub fn priority(mut self, priority: Priority) -> Self {
+        self.priority = priority;
+        self
     }
 
     /// Set actions
-    pub fn actions<I>(self, actions: I) -> Self
+    pub fn actions<I>(mut self, actions: I) -> Self
     where
         I: IntoIterator<Item = Action>,
     {
-        Self {
-            actions: Some(actions.into_iter().collect()),
-            ..self
-        }
+        self.actions = Some(actions.into_iter().collect());
+        self
     }
 
     /// Set click url
-    pub fn click(self, url: Url) -> Self {
-        Self {
-            click: Some(url),
-            ..self
-        }
+    #[inline]
+    pub fn click(mut self, url: Url) -> Self {
+        self.click = Some(url);
+        self
     }
 
     /// Set attachment url
-    pub fn attach(self, url: Url) -> Self {
-        Self {
-            attach: Some(url),
-            ..self
-        }
+    #[inline]
+    pub fn attach(mut self, url: Url) -> Self {
+        self.attach = Some(url);
+        self
     }
 
     /// Set filename
-    pub fn filename<S>(self, filename: S) -> Self
+    #[inline]
+    pub fn filename<S>(mut self, filename: S) -> Self
     where
         S: Into<String>,
     {
-        Self {
-            filename: Some(filename.into()),
-            ..self
-        }
+        self.filename = Some(filename.into());
+        self
     }
 
     /// Set delay
-    pub fn delay(self, time: DateTime<Local>) -> Self {
-        Self {
-            delay: Some(time.timestamp().to_string()),
-            ..self
-        }
+    #[inline]
+    pub fn delay(mut self, time: DateTime<Local>) -> Self {
+        self.delay = Some(time.timestamp().to_string());
+        self
     }
 
     /// Set email
-    pub fn email<S>(self, email: S) -> Self
+    #[inline]
+    pub fn email<S>(mut self, email: S) -> Self
     where
         S: Into<String>,
     {
-        Self {
-            email: Some(email.into()),
-            ..self
-        }
+        self.email = Some(email.into());
+        self
     }
 
     /// Use markdown
     ///
     /// <https://docs.ntfy.sh/publish/#markdown-formatting>
+    #[inline]
     pub fn markdown(mut self, markdown: bool) -> Self {
         self.markdown = markdown;
         self
