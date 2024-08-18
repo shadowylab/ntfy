@@ -10,12 +10,6 @@
 
 ## Example
 
-```toml
-ntfy = "0.4"
-tokio = { version = "1", features = ["full"] }
-url = "2"
-```
-
 ```rust,no_run
 use ntfy::prelude::*;
 
