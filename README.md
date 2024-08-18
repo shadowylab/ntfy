@@ -1,4 +1,4 @@
-# Ntfy SDK
+# Ntfy
 
 [![crates.io](https://img.shields.io/crates/v/ntfy.svg)](https://crates.io/crates/ntfy)
 [![Documentation](https://docs.rs/ntfy/badge.svg)](https://docs.rs/ntfy)
@@ -6,7 +6,7 @@
 
 ## Description
 
-[Ntfy](https://ntfy.sh) client library to send notifications from [Rust](https://rust-lang.org).
+[Rust](https://rust-lang.org) library for sending notifications over [ntfy](https://ntfy.sh).
 
 ## Example
 
@@ -53,15 +53,15 @@ async fn main() -> Result<(), NtfyError> {
 }
 ```
 
-More examples can be found in the [examples](./examples/) directory.
+More examples can be found in the [examples](examples) directory.
 
 ## Crate Feature Flags
 
 The following crate feature flags are available:
 
-| Feature             | Default | Description                                                                                                                |
-| ------------------- | :-----: | -------------------------------------------------------------------------------------------------------------------------- |
-| `blocking`          |   No    | Needed if you want to use this library in not async/await context                                                          |
+| Feature    | Default | Description                                                       |
+|------------|:-------:|-------------------------------------------------------------------|
+| `blocking` |   No    | Needed if you want to use this library in not async/await context |
 
 ## License
 
