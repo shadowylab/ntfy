@@ -14,7 +14,7 @@ use url::Url;
 use super::{Auth, Dispatcher};
 use crate::error::NtfyError;
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct DispatcherBuilder {
     url: String,
     auth: Option<Auth>,
@@ -33,21 +33,18 @@ impl DispatcherBuilder {
         }
     }
 
-    pub fn credentials(self, auth: Auth) -> Self {
-        Self {
-            auth: Some(auth),
-            ..self
-        }
+    #[inline]
+    pub fn credentials(mut self, auth: Auth) -> Self {
+        self.auth = Some(auth);
+        self
     }
 
-    pub fn proxy<S>(self, proxy: S) -> Self
+    pub fn proxy<S>(mut self, proxy: S) -> Self
     where
         S: Into<String>,
     {
-        Self {
-            proxy: Some(proxy.into()),
-            ..self
-        }
+        self.proxy = Some(proxy.into());
+        self
     }
 
     pub fn build(self) -> Result<Dispatcher, NtfyError> {

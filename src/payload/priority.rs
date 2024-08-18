@@ -5,19 +5,14 @@ use serde::de::Error;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 #[repr(u8)]
-#[derive(Clone, Debug)]
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum Priority {
     Max = 5,
     High = 4,
+    #[default]
     Default = 3,
     Low = 2,
     Min = 1,
-}
-
-impl Default for Priority {
-    fn default() -> Self {
-        Self::Default
-    }
 }
 
 pub(super) fn serialize<S>(p: &Priority, s: S) -> Result<S::Ok, S::Error>

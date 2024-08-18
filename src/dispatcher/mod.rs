@@ -16,7 +16,7 @@ use crate::error::NtfyError;
 use crate::net::request;
 use crate::payload::Payload;
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct Dispatcher {
     url: Url,
     client: ReqwestClient,

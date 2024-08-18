@@ -10,7 +10,7 @@ pub mod priority;
 pub use self::action::{Action, ActionType};
 pub use self::priority::Priority;
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Payload {
     pub topic: String,
     pub message: String,
