@@ -1,9 +1,7 @@
 // Copyright (c) 2022 Yuki Kishimoto
 // Distributed under the MIT software license
 
-use ntfy::payload::{Action, ActionType};
-use ntfy::{Auth, Dispatcher, NtfyError, Payload, Priority};
-use url::Url;
+use ntfy::prelude::*;
 
 #[tokio::main]
 async fn main() -> Result<(), NtfyError> {

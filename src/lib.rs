@@ -12,6 +12,7 @@ pub mod dispatcher;
 pub mod error;
 mod net;
 pub mod payload;
+pub mod prelude;
 
 pub use self::dispatcher::{Auth, Dispatcher, DispatcherBuilder};
 pub use self::error::NtfyError;
