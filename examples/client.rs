@@ -21,7 +21,7 @@ async fn main() -> Result<(), NtfyError> {
 
     let payload = Payload::new("mytopic")
         .message("Hello, **World**!") // Add optional message
-        .title("Alert") // Add optiona title
+        .title("Alert") // Add optional title
         .tags(["warning"]) // Add optional tags
         .priority(Priority::High) // Edit priority
         .actions([action]) // Add optional actions
