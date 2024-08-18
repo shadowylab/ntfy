@@ -1,12 +1,20 @@
 // Copyright (c) 2022 Yuki Kishimoto
 // Distributed under the MIT software license
 
+use std::fmt;
+
 use base64::engine::{general_purpose, Engine};
 
 #[derive(Clone)]
 pub struct Auth {
     username: String,
     password: String,
+}
+
+impl fmt::Debug for Auth {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "Auth(<sensitive>)")
+    }
 }
 
 impl Auth {
@@ -20,7 +28,8 @@ impl Auth {
         }
     }
 
-    pub fn as_base64(&self) -> String {
+    #[inline]
+    pub(crate) fn as_base64(&self) -> String {
         general_purpose::STANDARD.encode(format!("{}:{}", self.username, self.password))
     }
 }
