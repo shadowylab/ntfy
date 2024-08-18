@@ -6,14 +6,14 @@ use thiserror::Error;
 
 #[derive(Debug, Error)]
 pub enum NtfyError {
+    #[error(transparent)]
+    ReqwestError(#[from] reqwest::Error),
+    #[error(transparent)]
+    Url(#[from] url::ParseError),
+    #[error(transparent)]
+    InvalidHeaderValue(#[from] InvalidHeaderValue),
     #[error("Failed to deserialize: {0}")]
     FailedToDeserialize(String),
-    #[error("Reqwest error: {0}")]
-    ReqwestError(#[from] reqwest::Error),
-    #[error("Invalid header value: {0}")]
-    InvalidHeaderValue(#[from] InvalidHeaderValue),
-    #[error("Invalid url: {0}")]
-    Url(#[from] url::ParseError),
     #[error("Empty Response")]
     EmptyResponse,
     #[error("Bad Result")]
