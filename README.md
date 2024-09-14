@@ -29,7 +29,7 @@ async fn main() -> Result<(), NtfyError> {
     let payload = Payload::new("mytopic")
         .message("Hello, **World**!") // Add optional message
         .title("Alert") // Add optiona title
-        .tags(vec!["warning".into()]) // Add optional tags
+        .tags(["warning"]) // Add optional tags
         .priority(Priority::High) // Edit priority
         .actions([action]) // Add optional actions
         .click(Url::parse("https://example.com")?) // Add optional clickable url
