@@ -26,5 +26,7 @@ jobs:
       run: cargo fmt --all -- --config format_code_in_doc_comments=true --check
     - name: Build
       run: cargo build ${{ matrix.build-args }} --all
+    - name: Test
+      run: cargo test ${{ matrix.build-args }}
     - name: Clippy
       run: cargo clippy ${{ matrix.build-args }} -- -D warnings
