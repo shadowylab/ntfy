@@ -1,10 +1,7 @@
 // Copyright (c) 2022 Yuki Kishimoto
 // Distributed under the MIT software license
 
-#[cfg(feature = "blocking")]
-use reqwest::blocking::Client as ReqwestClient;
-#[cfg(not(feature = "blocking"))]
-use reqwest::Client as ReqwestClient;
+use reqwest::Client;
 use url::Url;
 
 pub mod auth;
@@ -19,7 +16,7 @@ use crate::payload::Payload;
 #[derive(Debug, Clone)]
 pub struct Dispatcher {
     url: Url,
-    client: ReqwestClient,
+    client: Client,
 }
 
 impl Dispatcher {
@@ -50,22 +47,11 @@ impl Dispatcher {
     }
 
     /// Send payload to ntfy server
-    #[cfg(not(feature = "blocking"))]
     pub async fn send(&self, payload: &Payload) -> Result<(), NtfyError> {
         let mut builder = self.client.post(self.url.as_str());
         if payload.markdown {
             builder = builder.header("Markdown", "yes");
         }
         request(builder.json(payload)).await
-    }
-
-    /// Send payload to ntfy server
-    #[cfg(feature = "blocking")]
-    pub fn send(&self, payload: &Payload) -> Result<(), NtfyError> {
-        let mut builder = self.client.post(self.url.as_str());
-        if payload.markdown {
-            builder = builder.header("Markdown", "yes");
-        }
-        request(builder.json(payload))
     }
 }
