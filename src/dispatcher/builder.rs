@@ -52,7 +52,7 @@ impl DispatcherBuilder {
 
         if let Some(auth) = self.auth {
             let mut headers = HeaderMap::new();
-            let mut auth_value = HeaderValue::from_str(&format!("Basic {}", auth.as_base64()))?;
+            let mut auth_value = HeaderValue::from_str(&auth.to_header_value())?;
             auth_value.set_sensitive(true);
             headers.insert("Authorization", auth_value);
             client = client.default_headers(headers);

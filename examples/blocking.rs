@@ -5,7 +5,7 @@ use ntfy::prelude::*;
 
 fn main() -> Result<(), NtfyError> {
     let dispatcher = Dispatcher::builder("https://ntfy.sh")
-        .credentials(Auth::new("username", "password")) // Add optional credentials
+        .credentials(Auth::credentials("username", "password")) // Add optional credentials
         .proxy("socks5h://127.0.0.1:9050") // Add optional proxy
         .build()?; // Build dispatcher
 
@@ -26,7 +26,7 @@ fn main() -> Result<(), NtfyError> {
         .delay(1639194738) // Add optional delay
         .markdown(true); // Use markdown
 
-    dispatcher.send(&payload).unwrap();
+    dispatcher.send(&payload)?;
 
     Ok(())
 }
