@@ -10,7 +10,6 @@ pub use url::Url;
 
 pub mod dispatcher;
 pub mod error;
-mod net;
 pub mod payload;
 pub mod prelude;
 
