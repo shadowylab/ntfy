@@ -19,7 +19,11 @@ thiserror = "1.0"
 url = { version = "2", features = ["serde"] }
 
 [dev-dependencies]
+async-utility = { git = "https://github.com/yukibtc/async-utility", rev = "575b6fb0b4e270ae44208d4b7c234366d33e32f6" }
 tokio = { version = "1", features = ["full"] }
+
+[[example]]
+name = "blocking"
 
 [[example]]
 name = "client"
