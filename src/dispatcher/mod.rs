@@ -1,7 +1,10 @@
 // Copyright (c) 2022 Yuki Kishimoto
 // Distributed under the MIT software license
 
+#[cfg(not(feature = "blocking"))]
 use reqwest::{Client, Response};
+#[cfg(feature = "blocking")]
+use ureq::{Agent, Response};
 use url::Url;
 
 pub mod auth;
@@ -15,7 +18,10 @@ use crate::payload::Payload;
 #[derive(Debug, Clone)]
 pub struct Dispatcher {
     url: Url,
+    #[cfg(not(feature = "blocking"))]
     client: Client,
+    #[cfg(feature = "blocking")]
+    agent: Agent,
 }
 
 impl Dispatcher {
@@ -45,6 +51,7 @@ impl Dispatcher {
         DispatcherBuilder::new(url)
     }
 
+    #[cfg(not(feature = "blocking"))]
     /// Send payload to ntfy server
     pub async fn send(&self, payload: &Payload) -> Result<(), NtfyError> {
         // Build request
@@ -64,6 +71,32 @@ impl Dispatcher {
 
         // Get full response text
         let text: String = res.text().await?;
+
+        if text.is_empty() {
+            return Err(NtfyError::EmptyResponse);
+        }
+
+        // TODO: check the text?
+
+        Ok(())
+    }
+
+    #[cfg(feature = "blocking")]
+    /// Send payload to ntfy server
+    pub fn send(&self, payload: &Payload) -> Result<(), NtfyError> {
+        // Build request
+        let mut builder = self.agent.post(self.url.as_str());
+
+        // If markdown, set headers
+        if payload.markdown {
+            builder = builder.set("Markdown", "yes");
+        }
+
+        // Send request
+        let res: Response = builder.send_json(payload)?;
+
+        // Get full response text
+        let text: String = res.into_string()?;
 
         if text.is_empty() {
             return Err(NtfyError::EmptyResponse);

@@ -3,9 +3,16 @@
 
 use std::str::FromStr;
 
+#[cfg(not(feature = "blocking"))]
 use reqwest::header::{HeaderMap, HeaderValue};
+#[cfg(not(feature = "blocking"))]
 use reqwest::ClientBuilder;
+#[cfg(not(feature = "blocking"))]
 use reqwest::Proxy;
+
+//#[cfg(feature = "blocking")]
+
+
 use url::Url;
 
 use super::{Auth, Dispatcher};
@@ -44,6 +51,7 @@ impl DispatcherBuilder {
         self
     }
 
+    #[cfg(not(feature = "blocking"))]
     pub fn build(self) -> Result<Dispatcher, NtfyError> {
         let mut client = ClientBuilder::new();
 
@@ -62,6 +70,32 @@ impl DispatcherBuilder {
         Ok(Dispatcher {
             url: Url::from_str(&self.url)?,
             client: client.build()?,
+        })
+    }
+
+    #[cfg(feature = "blocking")]
+    pub fn build(self) -> Result<Dispatcher, NtfyError> {
+        use ureq::{Error, MiddlewareNext, Request, Response};
+
+        let mut agent = ureq::builder();
+
+        if let Some(auth) = self.auth {
+            let heaver_value = auth.to_header_value();
+
+            // Set the authorization headers of every request using a middleware function
+            agent = agent.middleware(move|req: Request, next: MiddlewareNext| -> Result<Response, Error> {
+                next.handle(req.set("Authorization", &heaver_value))
+            });
+        }
+
+        if let Some(proxy) = self.proxy {
+            let proxy = ureq::Proxy::new(proxy)?;
+            agent = agent.proxy(proxy);
+        }
+
+        Ok(Dispatcher {
+            url: Url::from_str(&self.url)?,
+            agent: agent.build(),
         })
     }
 }

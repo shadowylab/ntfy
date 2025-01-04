@@ -10,12 +10,18 @@ repository = "https://github.com/shadowylab/ntfy.git"
 readme = "README.md"
 keywords = ["ntfy", "notifications", "sdk"]
 
+[features]
+default = ["dep:reqwest"]
+blocking = ["dep:ureq"]
+
 [dependencies]
 base64 = "0.22"
-reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls-webpki-roots", "socks"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 url = { version = "2", features = ["serde"] }
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls-webpki-roots", "socks"], optional = true } 
+ureq = { version = "2.12.1", features = ["json", "socks-proxy"], optional = true }
+
 
 [dev-dependencies]
 async-utility = { git = "https://github.com/yukibtc/async-utility", rev = "575b6fb0b4e270ae44208d4b7c234366d33e32f6" }
