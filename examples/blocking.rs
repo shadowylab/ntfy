@@ -1,7 +1,6 @@
 // Copyright (c) 2022 Yuki Kishimoto
 // Distributed under the MIT software license
 
-use async_utility::blocking::Async2Blocking;
 use ntfy::prelude::*;
 
 fn main() -> Result<(), NtfyError> {
@@ -27,7 +26,7 @@ fn main() -> Result<(), NtfyError> {
         .delay(1639194738) // Add optional delay
         .markdown(true); // Use markdown
 
-    dispatcher.send(&payload).blocking()?;
+    dispatcher.send(&payload)?;
 
     Ok(())
 }
