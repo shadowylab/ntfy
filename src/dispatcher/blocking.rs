@@ -1,7 +1,7 @@
 // Copyright (c) 2022 Yuki Kishimoto
 // Distributed under the MIT software license
 
-use ureq::{Agent, MiddlewareNext, Request, Response};
+use ureq::{Agent, AgentBuilder, MiddlewareNext, Request, Response};
 use url::Url;
 
 use super::builder::DispatcherBuilder;
@@ -17,8 +17,11 @@ pub struct Blocking {
 impl Blocking {
     #[inline]
     pub(crate) fn new(builder: DispatcherBuilder) -> Result<Self, Error> {
-        let mut client = ureq::builder();
+        Self::new_with_client(builder, ureq::builder())
+    }
 
+    #[inline]
+    pub(crate) fn new_with_client(builder: DispatcherBuilder, mut client: AgentBuilder) -> Result<Self, Error> {
         if let Some(auth) = builder.auth {
             let heaver_value = auth.to_header_value();
 
