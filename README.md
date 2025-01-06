@@ -43,6 +43,15 @@ async fn main() -> Result<(), Error> {
 }
 ```
 
+## Crate Feature Flags
+
+The following crate feature flags are available:
+
+| Feature    | Default | Description                        |
+|------------|:-------:|------------------------------------|
+| `async`    |   Yes   | Use `reqwest` as dispatcher client |
+| `blocking` |   No    | Use `ureq` as dispatcher client    |
+
 More examples can be found in the [examples](examples) directory.
 
 ## License
