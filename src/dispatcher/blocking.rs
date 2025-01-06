@@ -21,7 +21,10 @@ impl Blocking {
     }
 
     #[inline]
-    pub(crate) fn new_with_client(builder: DispatcherBuilder, mut client: AgentBuilder) -> Result<Self, Error> {
+    pub(crate) fn new_with_client(
+        builder: DispatcherBuilder,
+        mut client: AgentBuilder,
+    ) -> Result<Self, Error> {
         if let Some(auth) = builder.auth {
             let heaver_value = auth.to_header_value();
 

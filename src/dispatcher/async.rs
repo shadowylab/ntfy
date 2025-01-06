@@ -24,7 +24,10 @@ impl Async {
     }
 
     #[inline]
-    pub(crate) fn new_with_client(builder: DispatcherBuilder, mut client: ClientBuilder) -> Result<Self, Error> {
+    pub(crate) fn new_with_client(
+        builder: DispatcherBuilder,
+        mut client: ClientBuilder,
+    ) -> Result<Self, Error> {
         if let Some(auth) = builder.auth {
             let mut headers = HeaderMap::new();
             let mut auth_value = HeaderValue::from_str(&auth.to_header_value())?;
