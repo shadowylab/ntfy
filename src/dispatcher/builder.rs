@@ -1,28 +1,26 @@
 // Copyright (c) 2022 Yuki Kishimoto
 // Distributed under the MIT software license
 
-use std::str::FromStr;
-
-#[cfg(not(feature = "blocking"))]
-use reqwest::header::{HeaderMap, HeaderValue};
-#[cfg(not(feature = "blocking"))]
-use reqwest::ClientBuilder;
-#[cfg(not(feature = "blocking"))]
-use reqwest::Proxy;
-
+#[cfg(any(feature = "async", feature = "blocking"))]
 use url::Url;
 
-use super::{Auth, Dispatcher};
-use crate::error::NtfyError;
+#[cfg(feature = "async")]
+use super::Async;
+use super::Auth;
+#[cfg(feature = "blocking")]
+use super::Blocking;
+#[cfg(any(feature = "async", feature = "blocking"))]
+use super::{Dispatcher, Error};
 
 #[derive(Debug, Clone)]
 pub struct DispatcherBuilder {
     url: String,
-    auth: Option<Auth>,
-    proxy: Option<String>,
+    pub(crate) auth: Option<Auth>,
+    pub(crate) proxy: Option<String>,
 }
 
 impl DispatcherBuilder {
+    #[inline]
     pub fn new<S>(url: S) -> Self
     where
         S: Into<String>,
@@ -40,6 +38,7 @@ impl DispatcherBuilder {
         self
     }
 
+    #[inline]
     pub fn proxy<S>(mut self, proxy: S) -> Self
     where
         S: Into<String>,
@@ -48,53 +47,28 @@ impl DispatcherBuilder {
         self
     }
 
-    #[cfg(not(feature = "blocking"))]
-    pub fn build(self) -> Result<Dispatcher, NtfyError> {
-        let mut client = ClientBuilder::new();
+    #[cfg(feature = "async")]
+    #[deprecated(
+        since = "0.7.0",
+        note = "Please use `build_async` or `build_blocking` instead"
+    )]
+    pub fn build(self) -> Result<Dispatcher<Async>, Error> {
+        self.build_async()
+    }
 
-        if let Some(auth) = self.auth {
-            let mut headers = HeaderMap::new();
-            let mut auth_value = HeaderValue::from_str(&auth.to_header_value())?;
-            auth_value.set_sensitive(true);
-            headers.insert("Authorization", auth_value);
-            client = client.default_headers(headers);
-        }
-
-        if let Some(proxy) = self.proxy {
-            client = client.proxy(Proxy::all(proxy)?);
-        }
-
+    #[cfg(feature = "async")]
+    pub fn build_async(self) -> Result<Dispatcher<Async>, Error> {
         Ok(Dispatcher {
-            url: Url::from_str(&self.url)?,
-            client: client.build()?,
+            url: Url::parse(&self.url)?,
+            inner: Async::new(self)?,
         })
     }
 
     #[cfg(feature = "blocking")]
-    pub fn build(self) -> Result<Dispatcher, NtfyError> {
-        use ureq::{Error, MiddlewareNext, Request, Response};
-
-        let mut agent = ureq::builder();
-
-        if let Some(auth) = self.auth {
-            let heaver_value = auth.to_header_value();
-
-            // Set the authorization headers of every request using a middleware function
-            agent = agent.middleware(
-                move |req: Request, next: MiddlewareNext| -> Result<Response, Error> {
-                    next.handle(req.set("Authorization", &heaver_value))
-                },
-            );
-        }
-
-        if let Some(proxy) = self.proxy {
-            let proxy = ureq::Proxy::new(proxy)?;
-            agent = agent.proxy(proxy);
-        }
-
+    pub fn build_blocking(self) -> Result<Dispatcher<Blocking>, Error> {
         Ok(Dispatcher {
-            url: Url::from_str(&self.url)?,
-            agent: agent.build(),
+            url: Url::parse(&self.url)?,
+            inner: Blocking::new(self)?,
         })
     }
 }

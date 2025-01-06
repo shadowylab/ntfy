@@ -16,7 +16,8 @@ jobs:
       matrix:
         build-args:
           [
-            --no-default-features,
+            --no-default-features --features async,
+            --no-default-features --features blocking,
           ]
     steps:
     - name: Checkout

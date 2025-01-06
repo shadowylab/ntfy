@@ -4,11 +4,11 @@
 use ntfy::prelude::*;
 
 #[tokio::main]
-async fn main() -> Result<(), NtfyError> {
-    let dispatcher = Dispatcher::builder("https://ntfy.sh")
+async fn main() -> Result<(), Error> {
+    let dispatcher = DispatcherBuilder::new("https://ntfy.sh")
         .credentials(Auth::credentials("username", "password")) // Add optional credentials
-        .proxy("socks5://127.0.0.1:9050") // Add optional proxy
-        .build()?; // Build dispatcher
+        .proxy("socks5h://127.0.0.1:9050") // Add optional proxy
+        .build_async()?; // Build dispatcher
 
     let action = Action::new(
         ActionType::Http,

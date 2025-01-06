@@ -1,70 +1,78 @@
 // Copyright (c) 2022 Yuki Kishimoto
 // Distributed under the MIT software license
 
-use std::{fmt, io};
+use std::fmt;
+#[cfg(feature = "blocking")]
+use std::io;
 
-#[cfg(not(feature = "blocking"))]
+#[cfg(feature = "async")]
 use reqwest::header::InvalidHeaderValue;
 
+#[deprecated(since = "0.7.0", note = "Please use `Error` instead")]
+pub type NtfyError = Error;
+
 #[derive(Debug)]
-pub enum NtfyError {
-    #[cfg(not(feature = "blocking"))]
-    ReqwestError(reqwest::Error),
+pub enum Error {
+    #[cfg(feature = "async")]
+    Reqwest(reqwest::Error),
     #[cfg(feature = "blocking")]
-    UreqError(ureq::Error),
-    IoError(io::Error),
+    Ureq(Box<ureq::Error>),
+    #[cfg(feature = "blocking")]
+    Io(io::Error),
     Url(url::ParseError),
-    #[cfg(not(feature = "blocking"))]
+    #[cfg(feature = "async")]
     InvalidHeaderValue(InvalidHeaderValue),
     EmptyResponse,
 }
 
-impl std::error::Error for NtfyError {}
+impl std::error::Error for Error {}
 
-impl fmt::Display for NtfyError {
+impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            #[cfg(not(feature = "blocking"))]
-            Self::ReqwestError(e) => write!(f, "{}", e),
+            #[cfg(feature = "async")]
+            Self::Reqwest(e) => write!(f, "{}", e),
             #[cfg(feature = "blocking")]
-            Self::UreqError(e) => write!(f, "{}", e),
-            Self::IoError(e) => write!(f, "{}", e),
+            Self::Ureq(e) => write!(f, "{}", e),
+            #[cfg(feature = "blocking")]
+            Self::Io(e) => write!(f, "{}", e),
             Self::Url(e) => write!(f, "{}", e),
-            #[cfg(not(feature = "blocking"))]
+            #[cfg(feature = "async")]
             Self::InvalidHeaderValue(e) => write!(f, "{}", e),
             Self::EmptyResponse => write!(f, "Empty Response"),
         }
     }
 }
 
-#[cfg(not(feature = "blocking"))]
-impl From<reqwest::Error> for NtfyError {
+#[cfg(feature = "async")]
+impl From<reqwest::Error> for Error {
     fn from(e: reqwest::Error) -> Self {
-        Self::ReqwestError(e)
+        Self::Reqwest(e)
     }
 }
 
 #[cfg(feature = "blocking")]
-impl From<ureq::Error> for NtfyError {
+impl From<ureq::Error> for Error {
     fn from(e: ureq::Error) -> Self {
-        Self::UreqError(e)
+        Self::Ureq(Box::new(e))
     }
 }
 
-impl From<io::Error> for NtfyError {
+#[cfg(feature = "blocking")]
+impl From<io::Error> for Error {
     fn from(e: io::Error) -> Self {
-        Self::IoError(e)
+        Self::Io(e)
     }
 }
 
-impl From<url::ParseError> for NtfyError {
+impl From<url::ParseError> for Error {
     fn from(e: url::ParseError) -> Self {
         Self::Url(e)
     }
 }
 
-#[cfg(not(feature = "blocking"))]
-impl From<InvalidHeaderValue> for NtfyError {
+#[cfg(feature = "async")]
+impl From<InvalidHeaderValue> for Error {
     fn from(e: InvalidHeaderValue) -> Self {
         Self::InvalidHeaderValue(e)
     }

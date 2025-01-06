@@ -11,7 +11,8 @@ readme = "README.md"
 keywords = ["ntfy", "notifications", "sdk"]
 
 [features]
-default = ["dep:reqwest"]
+default = ["async"]
+async = ["dep:reqwest"]
 blocking = ["dep:ureq"]
 
 [dependencies]
@@ -23,7 +24,7 @@ ureq = { version = "2.12", features = ["json", "socks-proxy"], optional = true }
 url = { version = "2", features = ["serde"] }
 
 [dev-dependencies]
-tokio = { version = "1", features = ["full"] }
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 
 [[example]]
 name = "blocking"
@@ -31,6 +32,7 @@ required-features = ["blocking"]
 
 [[example]]
 name = "client"
+required-features = ["async"]
 
 [profile.release]
 lto = true

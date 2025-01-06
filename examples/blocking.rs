@@ -3,11 +3,11 @@
 
 use ntfy::prelude::*;
 
-fn main() -> Result<(), NtfyError> {
-    let dispatcher = Dispatcher::builder("https://ntfy.sh")
+fn main() -> Result<(), Error> {
+    let dispatcher = DispatcherBuilder::new("https://ntfy.sh")
         .credentials(Auth::credentials("username", "password")) // Add optional credentials
         .proxy("socks5://127.0.0.1:9050") // Add optional proxy
-        .build()?; // Build dispatcher
+        .build_blocking()?; // Build dispatcher
 
     let action = Action::new(
         ActionType::Http,
