@@ -4,7 +4,7 @@
 use ntfy::prelude::*;
 
 fn main() -> Result<(), Error> {
-    let dispatcher = DispatcherBuilder::new("https://ntfy.sh")
+    let dispatcher = dispatcher::builder("https://ntfy.sh")
         .credentials(Auth::credentials("username", "password")) // Add optional credentials
         .proxy("socks5://127.0.0.1:9050") // Add optional proxy
         .build_blocking()?; // Build dispatcher

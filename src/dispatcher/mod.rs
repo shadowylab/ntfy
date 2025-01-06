@@ -20,6 +20,15 @@ use crate::error::Error;
 #[cfg(any(feature = "async", feature = "blocking"))]
 use crate::payload::Payload;
 
+/// Creates a [`DispatcherBuilder`]
+#[inline]
+pub fn builder<S>(url: S) -> DispatcherBuilder
+where
+    S: Into<String>,
+{
+    DispatcherBuilder::new(url)
+}
+
 #[derive(Debug, Clone)]
 pub struct Dispatcher<T>
 where
@@ -34,7 +43,7 @@ where
     T: Clone,
 {
     /// Create new dispatcher
-    #[deprecated(since = "0.7.0", note = "Please use `Dispatcher::builder` instead")]
+    #[deprecated(since = "0.7.0", note = "Use the `DispatcherBuilder` instead")]
     pub fn new<S>(_url: S, _auth: Option<Auth>, _proxy: Option<S>) -> Result<Self, Error>
     where
         S: Into<String>,
@@ -42,7 +51,10 @@ where
         unimplemented!()
     }
 
-    #[deprecated(since = "0.7.0", note = "Please use `DispatcherBuilder::new` instead")]
+    #[deprecated(
+        since = "0.7.0",
+        note = "Use `dispatcher::builder` or `DispatcherBuilder::new` instead"
+    )]
     pub fn builder<S>(url: S) -> DispatcherBuilder
     where
         S: Into<String>,
