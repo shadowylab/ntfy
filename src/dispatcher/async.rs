@@ -20,8 +20,13 @@ pub struct Async {
 impl Async {
     #[inline]
     pub(crate) fn new(builder: DispatcherBuilder) -> Result<Self, Error> {
-        let mut client = ClientBuilder::new();
+        Self::new_with_client(builder, ClientBuilder::new())
+    }
 
+    pub(crate) fn new_with_client(
+        builder: DispatcherBuilder,
+        mut client: ClientBuilder,
+    ) -> Result<Self, Error> {
         if let Some(auth) = builder.auth {
             let mut headers = HeaderMap::new();
             let mut auth_value = HeaderValue::from_str(&auth.to_header_value())?;

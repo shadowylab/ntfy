@@ -11,6 +11,10 @@ use super::Auth;
 use super::Blocking;
 #[cfg(any(feature = "async", feature = "blocking"))]
 use super::{Dispatcher, Error};
+#[cfg(feature = "async")]
+use reqwest::ClientBuilder;
+#[cfg(feature = "blocking")]
+use ureq::AgentBuilder;
 
 #[derive(Debug, Clone)]
 pub struct DispatcherBuilder {
@@ -67,11 +71,33 @@ impl DispatcherBuilder {
         })
     }
 
+    #[cfg(feature = "async")]
+    pub fn build_async_with_client(
+        self,
+        client: ClientBuilder,
+    ) -> Result<Dispatcher<Async>, Error> {
+        Ok(Dispatcher {
+            url: Url::parse(&self.url)?,
+            inner: Async::new_with_client(self, client)?,
+        })
+    }
+
     #[cfg(feature = "blocking")]
     pub fn build_blocking(self) -> Result<Dispatcher<Blocking>, Error> {
         Ok(Dispatcher {
             url: Url::parse(&self.url)?,
             inner: Blocking::new(self)?,
+        })
+    }
+
+    #[cfg(feature = "blocking")]
+    pub fn build_blocking_with_client(
+        self,
+        client: AgentBuilder,
+    ) -> Result<Dispatcher<Blocking>, Error> {
+        Ok(Dispatcher {
+            url: Url::parse(&self.url)?,
+            inner: Blocking::new_with_client(self, client)?,
         })
     }
 }
