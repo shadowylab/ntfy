@@ -8,6 +8,9 @@
 #[cfg(not(any(feature = "async", feature = "blocking")))]
 compile_error!("at least one of the `async` or `blocking` features must be enabled");
 
+#[cfg(all(feature = "blocking", target_arch = "wasm32"))]
+compile_error!("`blocking` features can't be enabled on WASM");
+
 #[macro_use]
 extern crate serde;
 

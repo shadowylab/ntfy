@@ -2,7 +2,9 @@
 // Distributed under the MIT software license
 
 use reqwest::header::{HeaderMap, HeaderValue};
-use reqwest::{Client, ClientBuilder, Proxy, Response};
+#[cfg(not(target_arch = "wasm32"))]
+use reqwest::Proxy;
+use reqwest::{Client, ClientBuilder, Response};
 use url::Url;
 
 use super::builder::DispatcherBuilder;
@@ -28,6 +30,7 @@ impl Async {
             client = client.default_headers(headers);
         }
 
+        #[cfg(not(target_arch = "wasm32"))]
         if let Some(proxy) = builder.proxy {
             client = client.proxy(Proxy::all(proxy)?);
         }

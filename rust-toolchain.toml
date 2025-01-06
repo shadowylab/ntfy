@@ -2,3 +2,4 @@
 channel = "stable"
 profile = "minimal"
 components = ["clippy", "rust-docs", "rustfmt"]
+targets = ["wasm32-unknown-unknown"]
