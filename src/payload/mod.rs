@@ -15,7 +15,6 @@ pub struct Payload {
     pub message: String,
     pub title: Option<String>,
     pub tags: Option<Vec<String>>,
-    #[serde(with = "priority")]
     pub priority: Priority,
     pub actions: Option<Vec<Action>>,
     pub click: Option<Url>,

@@ -15,24 +15,28 @@ pub enum Priority {
     Min = 1,
 }
 
-pub(super) fn serialize<S>(p: &Priority, s: S) -> Result<S::Ok, S::Error>
-where
-    S: Serializer,
-{
-    let p: u8 = *p as u8;
-    p.serialize(s)
+impl Serialize for Priority {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let p: u8 = *self as u8;
+        p.serialize(serializer)
+    }
 }
 
-pub(super) fn deserialize<'de, D>(d: D) -> Result<Priority, D::Error>
-where
-    D: Deserializer<'de>,
-{
-    match u8::deserialize(d)? {
-        5 => Ok(Priority::Max),
-        4 => Ok(Priority::High),
-        3 => Ok(Priority::Default),
-        2 => Ok(Priority::Low),
-        1 => Ok(Priority::Min),
-        o => Err(Error::custom(format_args!("Invalid value: {}", o))),
+impl<'de> Deserialize<'de> for Priority {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        match u8::deserialize(deserializer)? {
+            5 => Ok(Priority::Max),
+            4 => Ok(Priority::High),
+            3 => Ok(Priority::Default),
+            2 => Ok(Priority::Low),
+            1 => Ok(Priority::Min),
+            o => Err(Error::custom(format_args!("Invalid value: {}", o))),
+        }
     }
 }
