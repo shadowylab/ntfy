@@ -70,6 +70,13 @@ impl FromStr for Priority {
     }
 }
 
+#[derive(Deserialize)]
+#[serde(untagged)]
+enum NumberOrString {
+    Number(u8),
+    String(String),
+}
+
 impl Serialize for Priority {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -86,7 +93,65 @@ impl<'de> Deserialize<'de> for Priority {
     where
         D: Deserializer<'de>,
     {
-        let priority: u8 = u8::deserialize(deserializer)?;
-        Priority::from_u8(priority).map_err(de::Error::custom)
+        match NumberOrString::deserialize(deserializer)? {
+            NumberOrString::Number(priority) => {
+                Priority::from_u8(priority).map_err(de::Error::custom)
+            }
+            NumberOrString::String(priority) => {
+                Self::from_str(&priority).map_err(de::Error::custom)
+            }
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_deserialize() {
+        let json = serde_json::json!(5);
+        let priority: Priority = serde_json::from_value(json).unwrap();
+        assert_eq!(priority, Priority::Max);
+
+        let json = serde_json::json!(4);
+        let priority: Priority = serde_json::from_value(json).unwrap();
+        assert_eq!(priority, Priority::High);
+
+        let json = serde_json::json!(3);
+        let priority: Priority = serde_json::from_value(json).unwrap();
+        assert_eq!(priority, Priority::Default);
+
+        let json = serde_json::json!(2);
+        let priority: Priority = serde_json::from_value(json).unwrap();
+        assert_eq!(priority, Priority::Low);
+
+        let json = serde_json::json!(1);
+        let priority: Priority = serde_json::from_value(json).unwrap();
+        assert_eq!(priority, Priority::Min);
+
+        let json = serde_json::json!("urgent");
+        let priority: Priority = serde_json::from_value(json).unwrap();
+        assert_eq!(priority, Priority::Max);
+
+        let json = serde_json::json!("max");
+        let priority: Priority = serde_json::from_value(json).unwrap();
+        assert_eq!(priority, Priority::Max);
+
+        let json = serde_json::json!("high");
+        let priority: Priority = serde_json::from_value(json).unwrap();
+        assert_eq!(priority, Priority::High);
+
+        let json = serde_json::json!("default");
+        let priority: Priority = serde_json::from_value(json).unwrap();
+        assert_eq!(priority, Priority::Default);
+
+        let json = serde_json::json!("low");
+        let priority: Priority = serde_json::from_value(json).unwrap();
+        assert_eq!(priority, Priority::Low);
+
+        let json = serde_json::json!("min");
+        let priority: Priority = serde_json::from_value(json).unwrap();
+        assert_eq!(priority, Priority::Min);
     }
 }
