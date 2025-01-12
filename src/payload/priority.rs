@@ -1,6 +1,9 @@
 // Copyright (c) 2022 Yuki Kishimoto
 // Distributed under the MIT software license
 
+use std::fmt;
+use std::str::FromStr;
+
 use serde::{de, Deserialize, Deserializer, Serialize, Serializer};
 
 use crate::error::Error;
@@ -14,6 +17,12 @@ pub enum Priority {
     Default = 3,
     Low = 2,
     Min = 1,
+}
+
+impl fmt::Display for Priority {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.as_str())
+    }
 }
 
 impl Priority {
@@ -32,6 +41,32 @@ impl Priority {
     #[inline]
     pub fn as_u8(&self) -> u8 {
         *self as u8
+    }
+
+    /// Convert to `&str`
+    pub fn as_str(&self) -> &str {
+        match self {
+            Self::Max => "max",
+            Self::High => "high",
+            Self::Default => "default",
+            Self::Low => "low",
+            Self::Min => "min",
+        }
+    }
+}
+
+impl FromStr for Priority {
+    type Err = Error;
+
+    fn from_str(priority: &str) -> Result<Self, Self::Err> {
+        match priority {
+            "max" | "urgent" => Ok(Self::Max),
+            "high" => Ok(Self::High),
+            "default" => Ok(Self::Default),
+            "low" => Ok(Self::Low),
+            "min" => Ok(Self::Min),
+            _ => Err(Error::UnknownPriority),
+        }
     }
 }
 
