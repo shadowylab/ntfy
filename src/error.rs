@@ -23,6 +23,7 @@ pub enum Error {
     #[cfg(feature = "async")]
     InvalidHeaderValue(InvalidHeaderValue),
     EmptyResponse,
+    UnknownPriority,
 }
 
 impl std::error::Error for Error {}
@@ -39,7 +40,8 @@ impl fmt::Display for Error {
             Self::Url(e) => write!(f, "{}", e),
             #[cfg(feature = "async")]
             Self::InvalidHeaderValue(e) => write!(f, "{}", e),
-            Self::EmptyResponse => write!(f, "Empty Response"),
+            Self::EmptyResponse => write!(f, "Empty response"),
+            Self::UnknownPriority => write!(f, "Unknown priority"),
         }
     }
 }
