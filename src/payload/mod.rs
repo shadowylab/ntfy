@@ -9,7 +9,7 @@ pub mod priority;
 pub use self::action::{Action, ActionType};
 pub use self::priority::Priority;
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct Payload {
     pub topic: String,
     pub message: String,
@@ -23,6 +23,7 @@ pub struct Payload {
     /// Delay (UNIX timestamp)
     pub delay: Option<u64>,
     pub email: Option<String>,
+    pub icon: Option<Url>,
     #[serde(skip)]
     pub markdown: bool,
 }
@@ -35,17 +36,7 @@ impl Payload {
     {
         Self {
             topic: topic.into(),
-            message: String::new(),
-            title: None,
-            tags: None,
-            priority: Priority::default(),
-            actions: None,
-            click: None,
-            attach: None,
-            filename: None,
-            delay: None,
-            email: None,
-            markdown: false,
+            ..Default::default()
         }
     }
 
@@ -133,6 +124,13 @@ impl Payload {
         S: Into<String>,
     {
         self.email = Some(email.into());
+        self
+    }
+
+    /// Set icon url
+    #[inline]
+    pub fn icon(mut self, url: Url) -> Self {
+        self.icon = Some(url);
         self
     }
 
