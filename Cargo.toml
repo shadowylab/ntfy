@@ -20,8 +20,9 @@ base64 = "0.22"
 reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls-webpki-roots", "socks"], optional = true }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-ureq = { version = "2.12", features = ["json", "socks-proxy"], optional = true }
+ureq = { version = "3.0", features = ["json", "socks-proxy"], optional = true }
 url = { version = "2", features = ["serde"] }
+http = "1.0"
 
 [dev-dependencies]
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }

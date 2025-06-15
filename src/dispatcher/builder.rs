@@ -14,7 +14,7 @@ use super::{Dispatcher, Error};
 #[cfg(feature = "async")]
 use reqwest::ClientBuilder;
 #[cfg(feature = "blocking")]
-use ureq::AgentBuilder;
+use ureq::{config::ConfigBuilder, typestate::AgentScope};
 
 #[derive(Debug, Clone)]
 pub struct DispatcherBuilder {
@@ -93,7 +93,7 @@ impl DispatcherBuilder {
     #[cfg(feature = "blocking")]
     pub fn build_blocking_with_client(
         self,
-        client: AgentBuilder,
+        client: ConfigBuilder<AgentScope>,
     ) -> Result<Dispatcher<Blocking>, Error> {
         Ok(Dispatcher {
             url: Url::parse(&self.url)?,

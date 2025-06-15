@@ -1,8 +1,12 @@
 // Copyright (c) 2022 Yuki Kishimoto
 // Distributed under the MIT software license
-
-use ureq::{Agent, AgentBuilder, MiddlewareNext, Request, Response};
 use url::Url;
+
+use ureq::config::ConfigBuilder;
+use ureq::http::{HeaderValue, Request, Response};
+use ureq::middleware::MiddlewareNext;
+use ureq::typestate::AgentScope;
+use ureq::{Agent, Body, SendBody};
 
 use super::builder::DispatcherBuilder;
 use crate::error::Error;
@@ -17,31 +21,35 @@ pub struct Blocking {
 impl Blocking {
     #[inline]
     pub(crate) fn new(builder: DispatcherBuilder) -> Result<Self, Error> {
-        Self::new_with_client(builder, ureq::builder())
+        Self::new_with_client(builder, ureq::Agent::config_builder())
     }
 
     pub(crate) fn new_with_client(
         builder: DispatcherBuilder,
-        mut client: AgentBuilder,
+        mut client: ConfigBuilder<AgentScope>,
     ) -> Result<Self, Error> {
         if let Some(auth) = builder.auth {
-            let heaver_value = auth.to_header_value();
+            let header_value = HeaderValue::from_str(&auth.to_header_value())?;
 
             // Set the authorization headers of every request using a middleware function
             client = client.middleware(
-                move |req: Request, next: MiddlewareNext| -> Result<Response, ureq::Error> {
-                    next.handle(req.set("Authorization", &heaver_value))
+                move |mut req: Request<SendBody>,
+                      next: MiddlewareNext|
+                      -> Result<Response<Body>, ureq::Error> {
+                    req.headers_mut()
+                        .insert("Authorization", header_value.clone());
+                    next.handle(req)
                 },
             );
         }
 
         if let Some(proxy) = builder.proxy {
-            let proxy = ureq::Proxy::new(proxy)?;
-            client = client.proxy(proxy);
+            let proxy = ureq::Proxy::new(&proxy)?;
+            client = client.proxy(Some(proxy));
         }
 
         Ok(Self {
-            client: client.build(),
+            client: client.build().into(),
         })
     }
 
@@ -51,14 +59,14 @@ impl Blocking {
 
         // If markdown, set headers
         if payload.markdown {
-            builder = builder.set("Markdown", "yes");
+            builder = builder.header("Markdown", "yes");
         }
 
         // Send request
-        let res: Response = builder.send_json(payload)?;
+        let res: Response<Body> = builder.send_json(payload)?;
 
         // Get full response text
-        let text: String = res.into_string()?;
+        let text = res.into_body().read_to_string()?;
 
         if text.is_empty() {
             return Err(Error::EmptyResponse);
