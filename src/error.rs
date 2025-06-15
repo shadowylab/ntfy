@@ -36,7 +36,6 @@ impl fmt::Display for Error {
             #[cfg(feature = "blocking")]
             Self::Io(e) => write!(f, "{}", e),
             Self::Url(e) => write!(f, "{}", e),
-            #[cfg(feature = "async")]
             Self::InvalidHeaderValue(e) => write!(f, "{}", e),
             Self::EmptyResponse => write!(f, "Empty response"),
             Self::UnknownPriority => write!(f, "Unknown priority"),
