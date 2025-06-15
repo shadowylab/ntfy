@@ -1,12 +1,41 @@
 // Copyright (c) 2022 Yuki Kishimoto
 // Distributed under the MIT software license
 
-use ureq::{Agent, AgentBuilder, MiddlewareNext, Request, Response};
+use ureq::config::ConfigBuilder;
+use ureq::http::{HeaderValue, Request, Response};
+use ureq::middleware::{Middleware, MiddlewareNext};
+use ureq::typestate::AgentScope;
+use ureq::{Agent, Body, SendBody};
 use url::Url;
 
 use super::builder::DispatcherBuilder;
 use crate::error::Error;
 use crate::payload::Payload;
+use crate::Auth;
+
+struct AuthMiddleware {
+    header: HeaderValue,
+}
+
+impl AuthMiddleware {
+    fn new(auth: Auth) -> Result<Self, Error> {
+        Ok(Self {
+            header: HeaderValue::from_str(&auth.to_header_value())?,
+        })
+    }
+}
+
+impl Middleware for AuthMiddleware {
+    fn handle(
+        &self,
+        mut req: Request<SendBody>,
+        next: MiddlewareNext,
+    ) -> Result<Response<Body>, ureq::Error> {
+        req.headers_mut()
+            .insert("Authorization", self.header.clone());
+        next.handle(req)
+    }
+}
 
 /// Blocking dispatcher
 #[derive(Debug, Clone)]
@@ -17,31 +46,28 @@ pub struct Blocking {
 impl Blocking {
     #[inline]
     pub(crate) fn new(builder: DispatcherBuilder) -> Result<Self, Error> {
-        Self::new_with_client(builder, ureq::builder())
+        Self::new_with_client(builder, Agent::config_builder())
     }
 
     pub(crate) fn new_with_client(
         builder: DispatcherBuilder,
-        mut client: AgentBuilder,
+        mut client: ConfigBuilder<AgentScope>,
     ) -> Result<Self, Error> {
         if let Some(auth) = builder.auth {
-            let heaver_value = auth.to_header_value();
+            // Construct middleware
+            let middleware = AuthMiddleware::new(auth)?;
 
             // Set the authorization headers of every request using a middleware function
-            client = client.middleware(
-                move |req: Request, next: MiddlewareNext| -> Result<Response, ureq::Error> {
-                    next.handle(req.set("Authorization", &heaver_value))
-                },
-            );
+            client = client.middleware(middleware);
         }
 
         if let Some(proxy) = builder.proxy {
-            let proxy = ureq::Proxy::new(proxy)?;
-            client = client.proxy(proxy);
+            let proxy = ureq::Proxy::new(&proxy)?;
+            client = client.proxy(Some(proxy));
         }
 
         Ok(Self {
-            client: client.build(),
+            client: client.build().into(),
         })
     }
 
@@ -51,14 +77,14 @@ impl Blocking {
 
         // If markdown, set headers
         if payload.markdown {
-            builder = builder.set("Markdown", "yes");
+            builder = builder.header("Markdown", "yes");
         }
 
         // Send request
-        let res: Response = builder.send_json(payload)?;
+        let res: Response<Body> = builder.send_json(payload)?;
 
         // Get full response text
-        let text: String = res.into_string()?;
+        let text = res.into_body().read_to_string()?;
 
         if text.is_empty() {
             return Err(Error::EmptyResponse);

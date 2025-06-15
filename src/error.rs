@@ -5,8 +5,7 @@ use std::fmt;
 #[cfg(feature = "blocking")]
 use std::io;
 
-#[cfg(feature = "async")]
-use reqwest::header::InvalidHeaderValue;
+use http::header::InvalidHeaderValue;
 
 #[deprecated(since = "0.7.0", note = "Please use `Error` instead")]
 pub type NtfyError = Error;
@@ -20,7 +19,6 @@ pub enum Error {
     #[cfg(feature = "blocking")]
     Io(io::Error),
     Url(url::ParseError),
-    #[cfg(feature = "async")]
     InvalidHeaderValue(InvalidHeaderValue),
     EmptyResponse,
     UnknownPriority,
@@ -38,7 +36,6 @@ impl fmt::Display for Error {
             #[cfg(feature = "blocking")]
             Self::Io(e) => write!(f, "{}", e),
             Self::Url(e) => write!(f, "{}", e),
-            #[cfg(feature = "async")]
             Self::InvalidHeaderValue(e) => write!(f, "{}", e),
             Self::EmptyResponse => write!(f, "Empty response"),
             Self::UnknownPriority => write!(f, "Unknown priority"),
@@ -73,7 +70,6 @@ impl From<url::ParseError> for Error {
     }
 }
 
-#[cfg(feature = "async")]
 impl From<InvalidHeaderValue> for Error {
     fn from(e: InvalidHeaderValue) -> Self {
         Self::InvalidHeaderValue(e)
