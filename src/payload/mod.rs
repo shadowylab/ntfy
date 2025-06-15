@@ -20,8 +20,7 @@ pub struct Payload {
     pub click: Option<Url>,
     pub attach: Option<Url>,
     pub filename: Option<String>,
-    /// Delay (UNIX timestamp)
-    pub delay: Option<u64>,
+    pub delay: Option<String>,
     pub email: Option<String>,
     pub icon: Option<Url>,
     #[serde(skip)]
@@ -112,8 +111,8 @@ impl Payload {
 
     /// Set delay
     #[inline]
-    pub fn delay(mut self, timestamp: u64) -> Self {
-        self.delay = Some(timestamp);
+    pub fn delay(mut self, delay: &str) -> Self {
+        self.delay = Some(delay.to_owned());
         self
     }
 
