@@ -23,7 +23,7 @@ fn main() -> Result<(), Error> {
         .actions([action]) // Add optional actions
         .click(Url::parse("https://example.com")?) // Add optional clickable url
         .attach(Url::parse("https://example.com/file.jpg")?) // Add optional url attachment
-        .delay(1639194738) // Add optional delay
+        .delay("30min") // Add optional delay
         .markdown(true); // Use markdown
 
     dispatcher.send(&payload)?;
