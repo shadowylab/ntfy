@@ -53,19 +53,20 @@ impl Payload {
     #[inline]
     pub fn title<S>(mut self, title: S) -> Self
     where
-        S: Into<String>,
+        S: Into<Option<String>>,
     {
-        self.title = Some(title.into());
+        self.title = title.into();
         self
     }
 
     /// Set tags
-    pub fn tags<I, S>(mut self, tags: I) -> Self
+    pub fn tags<I, S, P>(mut self, tags: P) -> Self
     where
         I: IntoIterator<Item = S>,
         S: Into<String>,
+        P: Into<Option<I>>,
     {
-        self.tags = Some(tags.into_iter().map(|t| t.into()).collect());
+        self.tags = tags.into().map(|i| i.into_iter().map(Into::into).collect());
         self
     }
 
@@ -77,11 +78,12 @@ impl Payload {
     }
 
     /// Set actions
-    pub fn actions<I>(mut self, actions: I) -> Self
+    pub fn actions<I, P>(mut self, actions: P) -> Self
     where
         I: IntoIterator<Item = Action>,
+        P: Into<Option<I>>,
     {
-        self.actions = Some(actions.into_iter().collect());
+        self.actions = actions.into().map(|i| i.into_iter().collect());
         self
     }
 
@@ -103,9 +105,9 @@ impl Payload {
     #[inline]
     pub fn filename<S>(mut self, filename: S) -> Self
     where
-        S: Into<String>,
+        S: Into<Option<String>>,
     {
-        self.filename = Some(filename.into());
+        self.filename = filename.into();
         self
     }
 
@@ -113,9 +115,9 @@ impl Payload {
     #[inline]
     pub fn delay<S>(mut self, delay: S) -> Self
     where
-        S: Into<String>,
+        S: Into<Option<String>>,
     {
-        self.delay = Some(delay.into());
+        self.delay = delay.into();
         self
     }
 
@@ -123,9 +125,9 @@ impl Payload {
     #[inline]
     pub fn email<S>(mut self, email: S) -> Self
     where
-        S: Into<String>,
+        S: Into<Option<String>>,
     {
-        self.email = Some(email.into());
+        self.email = email.into();
         self
     }
 

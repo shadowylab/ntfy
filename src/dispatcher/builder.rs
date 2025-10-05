@@ -50,9 +50,9 @@ impl DispatcherBuilder {
     #[cfg(not(target_arch = "wasm32"))]
     pub fn proxy<S>(mut self, proxy: S) -> Self
     where
-        S: Into<String>,
+        S: Into<Option<String>>,
     {
-        self.proxy = Some(proxy.into());
+        self.proxy = proxy.into();
         self
     }
 
