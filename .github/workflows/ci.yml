@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  fmt:
+    name: Format
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install nightly toolchain
+        run: rustup install nightly
+
+      - name: Add rustfmt for nightly
+        run: rustup component add rustfmt --toolchain nightly
+
+      - name: Check
+        run: cargo +nightly fmt --all --check -- --config format_code_in_doc_comments=true
+
+  check:
+    name: Check
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        args:
+          - --no-default-features --features async
+          - --no-default-features --features blocking
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Rust Cache
+        uses: Swatinem/rust-cache@v2.7.8
+
+      - name: Check
+        run: cargo check ${{ matrix.args }}
+
+      - name: Clippy
+        run: cargo clippy ${{ matrix.args }} -- -D warnings
+
+      - name: Test
+        run: cargo test ${{ matrix.args }}
