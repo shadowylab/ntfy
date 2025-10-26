@@ -9,22 +9,39 @@ pub mod priority;
 pub use self::action::{Action, ActionType};
 pub use self::priority::Priority;
 
+/// JSON payload
+///
+/// <https://docs.ntfy.sh/publish/#publish-as-json>
 #[derive(Debug, Clone, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub struct Payload {
+    /// Target topic name (**required**).
     pub topic: String,
-    pub message: String,
+    /// Message body.
+    pub message: Option<String>,
+    /// Message title.
     pub title: Option<String>,
+    /// List of tags that may or not map to emojis.
     pub tags: Option<Vec<String>>,
-    pub priority: Priority,
+    /// Message priority
+    pub priority: Option<Priority>,
+    /// Custom user action buttons for notifications
+    ///
+    /// See <https://docs.ntfy.sh/publish/#action-buttons>
     pub actions: Option<Vec<Action>>,
+    /// Website opened when notification is clicked
     pub click: Option<Url>,
+    /// URL of an attachment, see attach via URL
     pub attach: Option<Url>,
-    pub filename: Option<String>,
-    pub delay: Option<String>,
-    pub email: Option<String>,
+    /// Set to `true` if the message is Markdown-formatted.
+    pub markdown: Option<bool>,
+    /// URL to use as notification icon.
     pub icon: Option<Url>,
-    #[serde(skip)]
-    pub markdown: bool,
+    /// File name of the attachment.
+    pub filename: Option<String>,
+    /// Timestamp or duration for delayed delivery
+    pub delay: Option<String>,
+    /// E-mail address for e-mail notifications
+    pub email: Option<String>,
 }
 
 impl Payload {
@@ -45,7 +62,7 @@ impl Payload {
     where
         S: Into<String>,
     {
-        self.message = msg.into();
+        self.message = Some(msg.into());
         self
     }
 
@@ -72,7 +89,7 @@ impl Payload {
     /// Set priority
     #[inline]
     pub fn priority(mut self, priority: Priority) -> Self {
-        self.priority = priority;
+        self.priority = Some(priority);
         self
     }
 
@@ -96,6 +113,22 @@ impl Payload {
     #[inline]
     pub fn attach(mut self, url: Url) -> Self {
         self.attach = Some(url);
+        self
+    }
+
+    /// Use markdown
+    ///
+    /// <https://docs.ntfy.sh/publish/#markdown-formatting>
+    #[inline]
+    pub fn markdown(mut self, markdown: bool) -> Self {
+        self.markdown = Some(markdown);
+        self
+    }
+
+    /// Set icon url
+    #[inline]
+    pub fn icon(mut self, url: Url) -> Self {
+        self.icon = Some(url);
         self
     }
 
@@ -126,22 +159,6 @@ impl Payload {
         S: Into<String>,
     {
         self.email = Some(email.into());
-        self
-    }
-
-    /// Set icon url
-    #[inline]
-    pub fn icon(mut self, url: Url) -> Self {
-        self.icon = Some(url);
-        self
-    }
-
-    /// Use markdown
-    ///
-    /// <https://docs.ntfy.sh/publish/#markdown-formatting>
-    #[inline]
-    pub fn markdown(mut self, markdown: bool) -> Self {
-        self.markdown = markdown;
         self
     }
 }

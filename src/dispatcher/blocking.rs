@@ -73,12 +73,7 @@ impl Blocking {
 
     pub(crate) fn send(&self, url: &Url, payload: &Payload) -> Result<(), Error> {
         // Build request
-        let mut builder = self.client.post(url.as_str());
-
-        // If markdown, set headers
-        if payload.markdown {
-            builder = builder.header("Markdown", "yes");
-        }
+        let builder = self.client.post(url.as_str());
 
         // Send request
         let res: Response<Body> = builder.send_json(payload)?;

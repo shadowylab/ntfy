@@ -50,11 +50,6 @@ impl Async {
         // Build request
         let mut builder = self.client.post(url.as_str());
 
-        // If markdown, set headers
-        if payload.markdown {
-            builder = builder.header("Markdown", "yes");
-        }
-
         // Add payload
         builder = builder.json(payload);
 
