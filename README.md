@@ -17,7 +17,7 @@ use ntfy::prelude::*;
 async fn main() -> Result<(), Error> {
     let dispatcher = dispatcher::builder("https://ntfy.sh")
         .credentials(Auth::credentials("username", "password")) // Add optional credentials
-        .proxy("socks5h://127.0.0.1:9050") // Add optional proxy
+        //.proxy("socks5h://127.0.0.1:9050") // Add optional proxy (requires "socks" feature)
         .build_async()?; // Build dispatcher
 
     let action = Action::new(
@@ -51,6 +51,7 @@ The following crate feature flags are available:
 |------------|:-------:|------------------------------------|
 | `async`    |   Yes   | Use `reqwest` as dispatcher client |
 | `blocking` |   No    | Use `ureq` as dispatcher client    |
+| `socks`    |   No    | Enables socks proxy support        |
 
 More examples can be found in the [examples](examples) directory.
 

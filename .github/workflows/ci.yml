@@ -32,8 +32,12 @@ jobs:
     strategy:
       matrix:
         args:
+          - --default-features
+          - --all-features
           - --no-default-features --features async
+          - --no-default-features --features async,socks
           - --no-default-features --features blocking
+          - --no-default-features --features blocking,socks
     steps:
       - name: Checkout
         uses: actions/checkout@v4

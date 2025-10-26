@@ -2,7 +2,7 @@
 // Distributed under the MIT software license
 
 use reqwest::header::{HeaderMap, HeaderValue};
-#[cfg(not(target_arch = "wasm32"))]
+#[cfg(all(feature = "socks", not(target_arch = "wasm32")))]
 use reqwest::Proxy;
 use reqwest::{Client, ClientBuilder, Response};
 use url::Url;
@@ -35,7 +35,7 @@ impl Async {
             client = client.default_headers(headers);
         }
 
-        #[cfg(not(target_arch = "wasm32"))]
+        #[cfg(all(feature = "socks", not(target_arch = "wasm32")))]
         if let Some(proxy) = builder.proxy {
             client = client.proxy(Proxy::all(proxy)?);
         }

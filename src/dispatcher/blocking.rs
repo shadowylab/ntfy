@@ -5,6 +5,8 @@ use ureq::config::ConfigBuilder;
 use ureq::http::{HeaderValue, Request, Response};
 use ureq::middleware::{Middleware, MiddlewareNext};
 use ureq::typestate::AgentScope;
+#[cfg(all(feature = "socks", not(target_arch = "wasm32")))]
+use ureq::Proxy;
 use ureq::{Agent, Body, SendBody};
 use url::Url;
 
@@ -61,8 +63,9 @@ impl Blocking {
             client = client.middleware(middleware);
         }
 
+        #[cfg(all(feature = "socks", not(target_arch = "wasm32")))]
         if let Some(proxy) = builder.proxy {
-            let proxy = ureq::Proxy::new(&proxy)?;
+            let proxy = Proxy::new(&proxy)?;
             client = client.proxy(Some(proxy));
         }
 

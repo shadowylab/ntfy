@@ -11,17 +11,22 @@ readme = "README.md"
 keywords = ["ntfy", "notifications", "sdk"]
 
 [features]
+# Default features
 default = ["async"]
+# Enables the async client
 async = ["dep:reqwest"]
+# Enables the blocking client
 blocking = ["dep:ureq"]
+# Enables socks proxy support
+socks = ["reqwest?/socks", "ureq?/socks-proxy"]
 
 [dependencies]
 base64 = "0.22"
 http = "1.0"
-reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls-webpki-roots", "socks"], optional = true }
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls-webpki-roots"], optional = true }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-ureq = { version = "3.0", features = ["json", "socks-proxy"], optional = true }
+ureq = { version = "3.0", features = ["json"], optional = true }
 url = { version = "2", features = ["serde"] }
 
 [dev-dependencies]
@@ -29,11 +34,11 @@ tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 
 [[example]]
 name = "blocking"
-required-features = ["blocking"]
+required-features = ["blocking", "socks"]
 
 [[example]]
 name = "client"
-required-features = ["async"]
+required-features = ["async", "socks"]
 
 [profile.release]
 lto = true

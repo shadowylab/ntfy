@@ -22,7 +22,7 @@ use super::{Dispatcher, Error};
 pub struct DispatcherBuilder {
     url: String,
     pub(crate) auth: Option<Auth>,
-    #[cfg(not(target_arch = "wasm32"))]
+    #[cfg(all(feature = "socks", not(target_arch = "wasm32")))]
     pub(crate) proxy: Option<String>,
 }
 
@@ -35,7 +35,7 @@ impl DispatcherBuilder {
         Self {
             url: url.into(),
             auth: None,
-            #[cfg(not(target_arch = "wasm32"))]
+            #[cfg(all(feature = "socks", not(target_arch = "wasm32")))]
             proxy: None,
         }
     }
@@ -47,7 +47,7 @@ impl DispatcherBuilder {
     }
 
     #[inline]
-    #[cfg(not(target_arch = "wasm32"))]
+    #[cfg(all(feature = "socks", not(target_arch = "wasm32")))]
     pub fn proxy<S>(mut self, proxy: S) -> Self
     where
         S: Into<String>,
