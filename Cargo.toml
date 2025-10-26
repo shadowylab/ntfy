@@ -12,21 +12,25 @@ keywords = ["ntfy", "notifications", "sdk"]
 
 [features]
 # Default features
-default = ["async"]
+default = ["async", "rustls"]
 # Enables the async client
 async = ["dep:reqwest"]
 # Enables the blocking client
 blocking = ["dep:ureq"]
 # Enables socks proxy support
 socks = ["reqwest?/socks", "ureq?/socks-proxy"]
+# Enables rust TLS
+rustls = ["reqwest?/rustls-tls-webpki-roots", "ureq?/rustls"]
+# Enables native TLS (openssl)
+native-tls = ["reqwest?/native-tls", "ureq?/native-tls"]
 
 [dependencies]
 base64 = "0.22"
 http = "1.0"
-reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls-webpki-roots"], optional = true }
+reqwest = { version = "0.12", default-features = false, features = ["json"], optional = true }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-ureq = { version = "3.0", features = ["json"], optional = true }
+ureq = { version = "3.0", default-features = false , features = ["json"], optional = true }
 url = { version = "2", features = ["serde"] }
 
 [dev-dependencies]

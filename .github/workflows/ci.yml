@@ -34,10 +34,10 @@ jobs:
         args:
           - --default-features
           - --all-features
-          - --no-default-features --features async
-          - --no-default-features --features async,socks
-          - --no-default-features --features blocking
-          - --no-default-features --features blocking,socks
+          - --no-default-features --features async,rustls
+          - --no-default-features --features async,rustls,socks
+          - --no-default-features --features blocking,rustls
+          - --no-default-features --features blocking,rustls,socks
     steps:
       - name: Checkout
         uses: actions/checkout@v4
