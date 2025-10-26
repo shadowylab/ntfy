@@ -32,7 +32,7 @@ jobs:
     strategy:
       matrix:
         args:
-          - --default-features
+          - ""
           - --all-features
           - --no-default-features --features async,rustls
           - --no-default-features --features async,rustls,socks
