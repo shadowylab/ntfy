@@ -52,7 +52,7 @@ The following crate feature flags are available:
 | `async`      |   Yes   | Use `reqwest` as dispatcher client |
 | `blocking`   |   No    | Use `ureq` as dispatcher client    |
 | `socks`      |   No    | Enables socks proxy support        |
-| `rustls`     |   No    | Enables rust TLS                   |
+| `rustls`     |   Yes   | Enables rust TLS                   |
 | `native-tls` |   No    | Enables native TLS (openssl)       |
 
 More examples can be found in the [examples](examples) directory.
