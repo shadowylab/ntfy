@@ -10,9 +10,10 @@ use ureq::typestate::AgentScope;
 #[cfg(any(feature = "async", feature = "blocking"))]
 use url::Url;
 
+use crate::auth::Auth;
+
 #[cfg(feature = "async")]
 use super::Async;
-use super::Auth;
 #[cfg(feature = "blocking")]
 use super::Blocking;
 #[cfg(any(feature = "async", feature = "blocking"))]

@@ -1,17 +1,17 @@
 // Copyright (c) 2022 Yuki Kishimoto
 // Distributed under the MIT software license
 
-#[cfg(all(feature = "socks", not(target_arch = "wasm32")))]
-use ureq::Proxy;
 use ureq::config::ConfigBuilder;
 use ureq::http::{HeaderValue, Request, Response};
 use ureq::middleware::{Middleware, MiddlewareNext};
 use ureq::typestate::AgentScope;
+#[cfg(all(feature = "socks", not(target_arch = "wasm32")))]
+use ureq::Proxy;
 use ureq::{Agent, Body, SendBody};
 use url::Url;
 
 use super::builder::DispatcherBuilder;
-use crate::Auth;
+use crate::auth::Auth;
 use crate::error::Error;
 use crate::payload::Payload;
 

@@ -9,6 +9,7 @@
 
 pub use url::Url;
 
+pub use crate::auth::*;
 pub use crate::dispatcher::*;
 pub use crate::payload::*;
 pub use crate::*;

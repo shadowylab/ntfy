@@ -16,11 +16,13 @@ extern crate serde;
 
 pub use url::Url;
 
+pub mod auth;
 pub mod dispatcher;
 pub mod error;
 pub mod payload;
 pub mod prelude;
 
-pub use self::dispatcher::{Auth, Dispatcher, DispatcherBuilder};
+pub use self::auth::Auth;
+pub use self::dispatcher::{Dispatcher, DispatcherBuilder};
 pub use self::error::Error;
 pub use self::payload::{Payload, Priority};
