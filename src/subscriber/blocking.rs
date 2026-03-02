@@ -1,9 +1,8 @@
-use tungstenite::{
-    client::connect, client::ClientRequestBuilder, protocol::WebSocket, stream::MaybeTlsStream,
-};
+use tungstenite::{client::connect, protocol::WebSocket, stream::MaybeTlsStream};
 use url::Url;
 
 use super::builder::SubscriberBuilder;
+use super::request::get_request_builder;
 
 use crate::auth::Auth;
 use crate::error::Error;
@@ -22,20 +21,7 @@ impl Blocking {
     }
 
     pub(crate) fn subscribe(&self, url: &Url, topic: String) -> Result<MessageIterator, Error> {
-        let mut ws_url = url.clone();
-        let _ = match url.scheme() {
-            "https" => ws_url.set_scheme("wss"),
-            _ => ws_url.set_scheme("ws"),
-        };
-        ws_url.set_path(&format!("{topic}/ws"));
-        let uri = ws_url.to_string().parse::<http::Uri>().unwrap();
-
-        // Build request
-        let builder = match &self.auth {
-            Some(auth) => ClientRequestBuilder::new(uri)
-                .with_header("Authorization", auth.clone().to_header_value()),
-            None => ClientRequestBuilder::new(uri),
-        };
+        let builder = get_request_builder(url, topic, &self.auth);
 
         // Create message iterator
         Ok(MessageIterator {

@@ -3,6 +3,7 @@ use url::Url;
 #[cfg(feature = "blocking-subscribing")]
 mod blocking;
 pub mod builder;
+mod request;
 
 #[cfg(feature = "blocking-subscribing")]
 pub use self::blocking::{Blocking, MessageIterator};
