@@ -36,8 +36,10 @@ jobs:
           - --all-features
           - --no-default-features --features async,rustls
           - --no-default-features --features async,rustls,socks
+          - --no-default-features --features async-subscribing,rustls
           - --no-default-features --features blocking,rustls
           - --no-default-features --features blocking,rustls,socks
+          - --no-default-features --features blocking-subscribing,rustls
     steps:
       - name: Checkout
         uses: actions/checkout@v4
