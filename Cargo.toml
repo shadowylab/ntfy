@@ -48,6 +48,10 @@ required-features = ["blocking", "socks"]
 name = "client"
 required-features = ["async", "socks"]
 
+[[example]]
+name = "blocking-subscribing"
+required-features = ["blocking-subscribing"]
+
 [profile.release]
 lto = true
 codegen-units = 1
