@@ -11,7 +11,7 @@ use ureq::{Agent, Body, SendBody};
 use url::Url;
 
 use super::builder::DispatcherBuilder;
-use crate::Auth;
+use crate::auth::Auth;
 use crate::error::Error;
 use crate::payload::Payload;
 

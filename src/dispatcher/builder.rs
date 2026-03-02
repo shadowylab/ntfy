@@ -12,11 +12,11 @@ use url::Url;
 
 #[cfg(feature = "async")]
 use super::Async;
-use super::Auth;
 #[cfg(feature = "blocking")]
 use super::Blocking;
 #[cfg(any(feature = "async", feature = "blocking"))]
 use super::{Dispatcher, Error};
+use crate::auth::Auth;
 
 #[derive(Debug, Clone)]
 pub struct DispatcherBuilder {
