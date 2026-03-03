@@ -1,5 +1,7 @@
 use url::Url;
 
+#[cfg(feature = "async-subscribing")]
+use super::Async;
 #[cfg(feature = "blocking-subscribing")]
 use super::Blocking;
 use super::{Error, Subscriber};
@@ -36,6 +38,14 @@ impl SubscriberBuilder {
         S: Into<String>,
     {
         panic!("Proxies are not supported by Subscriber.");
+    }
+
+    #[cfg(feature = "async-subscribing")]
+    pub fn build_async(self) -> Result<Subscriber<Async>, Error> {
+        Ok(Subscriber {
+            url: Url::parse(&self.url)?,
+            inner: Async::new(self)?,
+        })
     }
 
     #[cfg(feature = "blocking-subscribing")]

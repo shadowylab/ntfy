@@ -12,6 +12,6 @@ pub use url::Url;
 pub use crate::auth::*;
 pub use crate::dispatcher::*;
 pub use crate::payload::*;
-#[cfg(feature = "blocking-subscribing")]
+#[cfg(any(feature = "async-subscribing", feature = "blocking-subscribing"))]
 pub use crate::subscriber::*;
 pub use crate::*;

@@ -165,7 +165,7 @@ impl Payload {
 
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 #[serde(rename_all = "snake_case")]
-#[cfg(feature = "blocking-subscribing")]
+#[cfg(any(feature = "async-subscribing", feature = "blocking-subscribing"))]
 pub enum ReceivedMessageType {
     Open,
     Keepalive,
@@ -179,7 +179,7 @@ pub enum ReceivedMessageType {
 ///
 /// <https://docs.ntfy.sh/subscribe/api/#json-message-format>
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
-#[cfg(feature = "blocking-subscribing")]
+#[cfg(any(feature = "async-subscribing", feature = "blocking-subscribing"))]
 pub struct ReceivedAttachment {
     /// Name of the attachment.
     name: String,
@@ -198,7 +198,7 @@ pub struct ReceivedAttachment {
 ///
 /// <https://docs.ntfy.sh/subscribe/api/#json-message-format>
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
-#[cfg(feature = "blocking-subscribing")]
+#[cfg(any(feature = "async-subscribing", feature = "blocking-subscribing"))]
 pub struct ReceivedPayload {
     /// Randomly chosen message identifier.
     pub id: String,

@@ -1,10 +1,14 @@
 use url::Url;
 
+#[cfg(feature = "async-subscribing")]
+mod r#async;
 #[cfg(feature = "blocking-subscribing")]
 mod blocking;
 pub mod builder;
 mod request;
 
+#[cfg(feature = "async-subscribing")]
+pub use self::r#async::{Async, MessageStream};
 #[cfg(feature = "blocking-subscribing")]
 pub use self::blocking::{Blocking, MessageIterator};
 pub use self::builder::SubscriberBuilder;
@@ -26,6 +30,18 @@ where
 {
     url: Url,
     inner: T,
+}
+
+#[cfg(feature = "async-subscribing")]
+impl Subscriber<Async> {
+    /// Subscribe to ntfy server topic
+    #[inline]
+    pub async fn subscribe<S>(&self, topic: S) -> Result<MessageStream, Error>
+    where
+        S: Into<String>,
+    {
+        self.inner.subscribe(&self.url, topic.into()).await
+    }
 }
 
 #[cfg(feature = "blocking-subscribing")]
