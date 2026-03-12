@@ -1,9 +1,9 @@
 // Copyright (c) 2022 Yuki Kishimoto
 // Distributed under the MIT software license
 
-use reqwest::header::{HeaderMap, HeaderValue};
 #[cfg(all(feature = "socks", not(target_arch = "wasm32")))]
 use reqwest::Proxy;
+use reqwest::header::{HeaderMap, HeaderValue};
 use reqwest::{Client, ClientBuilder, Response};
 use url::Url;
 

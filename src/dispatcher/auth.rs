@@ -3,7 +3,7 @@
 
 use std::fmt;
 
-use base64::engine::{general_purpose, Engine};
+use base64::engine::{Engine, general_purpose};
 
 #[derive(Clone)]
 pub enum Auth {

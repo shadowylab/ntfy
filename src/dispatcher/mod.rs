@@ -10,12 +10,12 @@ pub mod auth;
 mod blocking;
 pub mod builder;
 
+#[cfg(feature = "async")]
+pub use self::r#async::Async;
 pub use self::auth::Auth;
 #[cfg(feature = "blocking")]
 pub use self::blocking::Blocking;
 pub use self::builder::DispatcherBuilder;
-#[cfg(feature = "async")]
-pub use self::r#async::Async;
 use crate::error::Error;
 #[cfg(any(feature = "async", feature = "blocking"))]
 use crate::payload::Payload;
