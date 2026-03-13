@@ -5,17 +5,16 @@ use url::Url;
 
 #[cfg(feature = "async")]
 mod r#async;
-pub mod auth;
 #[cfg(feature = "blocking")]
 mod blocking;
 pub mod builder;
 
 #[cfg(feature = "async")]
 pub use self::r#async::Async;
-pub use self::auth::Auth;
 #[cfg(feature = "blocking")]
 pub use self::blocking::Blocking;
 pub use self::builder::DispatcherBuilder;
+use crate::auth::Auth;
 use crate::error::Error;
 #[cfg(any(feature = "async", feature = "blocking"))]
 use crate::payload::Payload;

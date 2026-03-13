@@ -18,6 +18,9 @@ pub enum Error {
     Ureq(Box<ureq::Error>),
     #[cfg(feature = "blocking")]
     Io(io::Error),
+    #[cfg(any(feature = "async-subscribing", feature = "blocking-subscribing"))]
+    Tungstenite(tungstenite::Error),
+    Serde(serde_json::Error),
     Url(url::ParseError),
     InvalidHeaderValue(InvalidHeaderValue),
     EmptyResponse,
@@ -35,6 +38,9 @@ impl fmt::Display for Error {
             Self::Ureq(e) => write!(f, "{}", e),
             #[cfg(feature = "blocking")]
             Self::Io(e) => write!(f, "{}", e),
+            #[cfg(any(feature = "async-subscribing", feature = "blocking-subscribing"))]
+            Self::Tungstenite(e) => write!(f, "{}", e),
+            Self::Serde(e) => write!(f, "{}", e),
             Self::Url(e) => write!(f, "{}", e),
             Self::InvalidHeaderValue(e) => write!(f, "{}", e),
             Self::EmptyResponse => write!(f, "Empty response"),
@@ -61,6 +67,19 @@ impl From<ureq::Error> for Error {
 impl From<io::Error> for Error {
     fn from(e: io::Error) -> Self {
         Self::Io(e)
+    }
+}
+
+#[cfg(any(feature = "async-subscribing", feature = "blocking-subscribing"))]
+impl From<tungstenite::Error> for Error {
+    fn from(e: tungstenite::Error) -> Self {
+        Self::Tungstenite(e)
+    }
+}
+
+impl From<serde_json::Error> for Error {
+    fn from(e: serde_json::Error) -> Self {
+        Self::Serde(e)
     }
 }
 
