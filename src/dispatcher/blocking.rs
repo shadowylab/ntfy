@@ -22,7 +22,7 @@ struct AuthMiddleware {
 impl AuthMiddleware {
     fn new(auth: Auth) -> Result<Self, Error> {
         Ok(Self {
-            header: HeaderValue::from_str(&auth.to_header_value())?,
+            header: HeaderValue::from_str(&auth.header_value())?,
         })
     }
 }

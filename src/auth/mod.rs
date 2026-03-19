@@ -59,8 +59,7 @@ impl Auth {
         Self::Token(token.into())
     }
 
-    #[allow(clippy::wrong_self_convention)]
-    pub(crate) fn to_header_value(self) -> String {
+    pub(crate) fn header_value(&self) -> String {
         match self {
             Self::Credentials { username, password } => {
                 let b64: String =
@@ -81,14 +80,14 @@ mod tests {
     #[test]
     fn test_auth_credentials() {
         let auth = Auth::credentials("username", "password");
-        assert_eq!(auth.to_header_value(), "Basic dXNlcm5hbWU6cGFzc3dvcmQ=");
+        assert_eq!(auth.header_value(), "Basic dXNlcm5hbWU6cGFzc3dvcmQ=");
     }
 
     #[test]
     fn test_auth_token() {
         let auth = Auth::token("tk_AgQdq7mVBoFD37zQVN29RhuMzNIz2");
         assert_eq!(
-            auth.to_header_value(),
+            auth.header_value(),
             "Bearer tk_AgQdq7mVBoFD37zQVN29RhuMzNIz2"
         );
     }

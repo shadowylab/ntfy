@@ -29,7 +29,7 @@ impl Async {
     ) -> Result<Self, Error> {
         if let Some(auth) = builder.auth {
             let mut headers = HeaderMap::new();
-            let mut auth_value = HeaderValue::from_str(&auth.to_header_value())?;
+            let mut auth_value = HeaderValue::from_str(&auth.header_value())?;
             auth_value.set_sensitive(true);
             headers.insert("Authorization", auth_value);
             client = client.default_headers(headers);
