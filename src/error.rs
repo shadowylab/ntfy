@@ -2,7 +2,7 @@
 // Distributed under the MIT software license
 
 use std::fmt;
-#[cfg(feature = "blocking")]
+#[cfg(feature = "blocking-dispatcher")]
 use std::io;
 
 use http::header::InvalidHeaderValue;
