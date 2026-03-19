@@ -1,8 +1,8 @@
 use url::Url;
 
-#[cfg(feature = "async-subscribing")]
+#[cfg(feature = "async-subscriber")]
 use super::Async;
-#[cfg(feature = "blocking-subscribing")]
+#[cfg(feature = "blocking-subscriber")]
 use super::Blocking;
 use super::{Error, Subscriber};
 use crate::auth::Auth;
@@ -31,7 +31,7 @@ impl SubscriberBuilder {
         self
     }
 
-    #[cfg(feature = "async-subscribing")]
+    #[cfg(feature = "async-subscriber")]
     pub fn build_async(self) -> Result<Subscriber<Async>, Error> {
         let mut url: Url = Url::parse(&self.url)?;
 
@@ -43,7 +43,7 @@ impl SubscriberBuilder {
         })
     }
 
-    #[cfg(feature = "blocking-subscribing")]
+    #[cfg(feature = "blocking-subscriber")]
     pub fn build_blocking(self) -> Result<Subscriber<Blocking>, Error> {
         let mut url: Url = Url::parse(&self.url)?;
 

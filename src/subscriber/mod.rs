@@ -1,15 +1,15 @@
 use url::Url;
 
-#[cfg(feature = "async-subscribing")]
+#[cfg(feature = "async-subscriber")]
 mod r#async;
-#[cfg(feature = "blocking-subscribing")]
+#[cfg(feature = "blocking-subscriber")]
 mod blocking;
 pub mod builder;
 mod request;
 
-#[cfg(feature = "async-subscribing")]
+#[cfg(feature = "async-subscriber")]
 pub use self::r#async::{Async, MessageStream as AsyncMessageStream};
-#[cfg(feature = "blocking-subscribing")]
+#[cfg(feature = "blocking-subscriber")]
 pub use self::blocking::{Blocking, MessageStream as BlockingMessageStream};
 pub use self::builder::SubscriberBuilder;
 use crate::error::Error;
@@ -32,7 +32,7 @@ where
     inner: T,
 }
 
-#[cfg(feature = "async-subscribing")]
+#[cfg(feature = "async-subscriber")]
 impl Subscriber<Async> {
     /// Subscribe to ntfy server topic
     #[inline]
@@ -44,7 +44,7 @@ impl Subscriber<Async> {
     }
 }
 
-#[cfg(feature = "blocking-subscribing")]
+#[cfg(feature = "blocking-subscriber")]
 impl Subscriber<Blocking> {
     /// Subscribe to ntfy server topic
     #[inline]

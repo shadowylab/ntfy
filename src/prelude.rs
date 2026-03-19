@@ -10,8 +10,9 @@
 pub use url::Url;
 
 pub use crate::auth::*;
+#[cfg(any(feature = "async-dispatcher", feature = "blocking-dispatcher"))]
 pub use crate::dispatcher::*;
 pub use crate::payload::*;
-#[cfg(any(feature = "async-subscribing", feature = "blocking-subscribing"))]
+#[cfg(any(feature = "async-subscriber", feature = "blocking-subscriber"))]
 pub use crate::subscriber::*;
 pub use crate::*;

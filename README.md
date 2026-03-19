@@ -47,13 +47,17 @@ async fn main() -> Result<(), Error> {
 
 The following crate feature flags are available:
 
-| Feature      | Default | Description                        |
-|--------------|:-------:|------------------------------------|
-| `async`      |   Yes   | Use `reqwest` as dispatcher client |
-| `blocking`   |   No    | Use `ureq` as dispatcher client    |
-| `socks`      |   No    | Enables socks proxy support        |
-| `rustls`     |   Yes   | Enables rust TLS                   |
-| `native-tls` |   No    | Enables native TLS (openssl)       |
+| Feature               | Default | Description                                        |
+|-----------------------|:-------:|----------------------------------------------------|
+| `async`               |   Yes   | Enables the async `dispatcher` and `subscriber`    |
+| `blocking`            |   No    | Enables the blocking `dispatcher` and `subscriber` |
+| `async-dispatcher`    |   Yes   | Enables the async `dispatcher`                     |
+| `blocking-dispatcher` |   No    | Enables the blocking `dispatcher`                  |
+| `async-subscriber`    |   Yes   | Enables the async and `subscriber`                 |
+| `blocking-subscriber` |   No    | Enables the blocking and `subscriber`              |
+| `socks`               |   No    | Enables socks proxy support                        |
+| `rustls`              |   Yes   | Enables rust TLS                                   |
+| `native-tls`          |   No    | Enables native TLS (openssl)                       |
 
 More examples can be found in the [examples](examples) directory.
 

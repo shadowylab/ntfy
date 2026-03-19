@@ -1,20 +1,20 @@
 // Copyright (c) 2022 Yuki Kishimoto
 // Distributed under the MIT software license
 
-#[cfg(feature = "async")]
+#[cfg(feature = "async-dispatcher")]
 use reqwest::ClientBuilder;
-#[cfg(feature = "blocking")]
+#[cfg(feature = "blocking-dispatcher")]
 use ureq::config::ConfigBuilder;
-#[cfg(feature = "blocking")]
+#[cfg(feature = "blocking-dispatcher")]
 use ureq::typestate::AgentScope;
-#[cfg(any(feature = "async", feature = "blocking"))]
+#[cfg(any(feature = "async-dispatcher", feature = "blocking-dispatcher"))]
 use url::Url;
 
-#[cfg(feature = "async")]
+#[cfg(feature = "async-dispatcher")]
 use super::Async;
-#[cfg(feature = "blocking")]
+#[cfg(feature = "blocking-dispatcher")]
 use super::Blocking;
-#[cfg(any(feature = "async", feature = "blocking"))]
+#[cfg(any(feature = "async-dispatcher", feature = "blocking-dispatcher"))]
 use super::{Dispatcher, Error};
 use crate::auth::Auth;
 
@@ -56,7 +56,7 @@ impl DispatcherBuilder {
         self
     }
 
-    #[cfg(feature = "async")]
+    #[cfg(feature = "async-dispatcher")]
     #[deprecated(
         since = "0.7.0",
         note = "Please use `build_async` or `build_blocking` instead"
@@ -65,7 +65,7 @@ impl DispatcherBuilder {
         self.build_async()
     }
 
-    #[cfg(feature = "async")]
+    #[cfg(feature = "async-dispatcher")]
     pub fn build_async(self) -> Result<Dispatcher<Async>, Error> {
         Ok(Dispatcher {
             url: Url::parse(&self.url)?,
@@ -73,7 +73,7 @@ impl DispatcherBuilder {
         })
     }
 
-    #[cfg(feature = "async")]
+    #[cfg(feature = "async-dispatcher")]
     pub fn build_async_with_client(
         self,
         client: ClientBuilder,
@@ -84,7 +84,7 @@ impl DispatcherBuilder {
         })
     }
 
-    #[cfg(feature = "blocking")]
+    #[cfg(feature = "blocking-dispatcher")]
     pub fn build_blocking(self) -> Result<Dispatcher<Blocking>, Error> {
         Ok(Dispatcher {
             url: Url::parse(&self.url)?,
@@ -92,7 +92,7 @@ impl DispatcherBuilder {
         })
     }
 
-    #[cfg(feature = "blocking")]
+    #[cfg(feature = "blocking-dispatcher")]
     pub fn build_blocking_with_client(
         self,
         client: ConfigBuilder<AgentScope>,

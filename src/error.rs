@@ -12,13 +12,13 @@ pub type NtfyError = Error;
 
 #[derive(Debug)]
 pub enum Error {
-    #[cfg(feature = "async")]
+    #[cfg(feature = "async-dispatcher")]
     Reqwest(reqwest::Error),
-    #[cfg(feature = "blocking")]
+    #[cfg(feature = "blocking-dispatcher")]
     Ureq(Box<ureq::Error>),
-    #[cfg(feature = "blocking")]
+    #[cfg(feature = "blocking-dispatcher")]
     Io(io::Error),
-    #[cfg(any(feature = "async-subscribing", feature = "blocking-subscribing"))]
+    #[cfg(any(feature = "async-subscriber", feature = "blocking-subscriber"))]
     Tungstenite(tungstenite::Error),
     Serde(serde_json::Error),
     Url(url::ParseError),
@@ -33,13 +33,13 @@ impl std::error::Error for Error {}
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            #[cfg(feature = "async")]
+            #[cfg(feature = "async-dispatcher")]
             Self::Reqwest(e) => write!(f, "{}", e),
-            #[cfg(feature = "blocking")]
+            #[cfg(feature = "blocking-dispatcher")]
             Self::Ureq(e) => write!(f, "{}", e),
-            #[cfg(feature = "blocking")]
+            #[cfg(feature = "blocking-dispatcher")]
             Self::Io(e) => write!(f, "{}", e),
-            #[cfg(any(feature = "async-subscribing", feature = "blocking-subscribing"))]
+            #[cfg(any(feature = "async-subscriber", feature = "blocking-subscriber"))]
             Self::Tungstenite(e) => write!(f, "{}", e),
             Self::Serde(e) => write!(f, "{}", e),
             Self::Url(e) => write!(f, "{}", e),
@@ -51,28 +51,28 @@ impl fmt::Display for Error {
     }
 }
 
-#[cfg(feature = "async")]
+#[cfg(feature = "async-dispatcher")]
 impl From<reqwest::Error> for Error {
     fn from(e: reqwest::Error) -> Self {
         Self::Reqwest(e)
     }
 }
 
-#[cfg(feature = "blocking")]
+#[cfg(feature = "blocking-dispatcher")]
 impl From<ureq::Error> for Error {
     fn from(e: ureq::Error) -> Self {
         Self::Ureq(Box::new(e))
     }
 }
 
-#[cfg(feature = "blocking")]
+#[cfg(feature = "blocking-dispatcher")]
 impl From<io::Error> for Error {
     fn from(e: io::Error) -> Self {
         Self::Io(e)
     }
 }
 
-#[cfg(any(feature = "async-subscribing", feature = "blocking-subscribing"))]
+#[cfg(any(feature = "async-subscriber", feature = "blocking-subscriber"))]
 impl From<tungstenite::Error> for Error {
     fn from(e: tungstenite::Error) -> Self {
         Self::Tungstenite(e)

@@ -11,17 +11,25 @@ readme = "README.md"
 rust-version = "1.85.0"
 keywords = ["ntfy", "notifications", "sdk"]
 
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
+
 [features]
 # Default features
 default = ["async", "rustls"]
+# Enables the async dispatcher and subscriber
+async = ["async-dispatcher", "async-subscriber"]
+# Enables the blocking dispatcher and subscriber
+blocking = ["blocking-dispatcher", "blocking-subscriber"]
 # Enables the async client
-async = ["dep:reqwest"]
+async-dispatcher = ["dep:reqwest"]
 # Enables the blocking client
-blocking = ["dep:ureq"]
-# Enables async topic subscribing
-async-subscribing = ["async", "dep:futures-util", "dep:tokio", "dep:tokio-tungstenite", "dep:tungstenite"]
-# Enables blocking topic subscribing
-blocking-subscribing = ["blocking", "dep:tungstenite"]
+blocking-dispatcher = ["dep:ureq"]
+# Enables async topic subscriber
+async-subscriber = ["dep:futures-util", "dep:tokio", "dep:tokio-tungstenite", "dep:tungstenite"]
+# Enables blocking topic subscriber
+blocking-subscriber = ["dep:tungstenite"]
 # Enables socks proxy support
 socks = ["reqwest?/socks", "ureq?/socks-proxy"]
 # Enables rust TLS
@@ -46,20 +54,20 @@ url = { version = "2", features = ["serde"] }
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 
 [[example]]
-name = "blocking"
-required-features = ["blocking", "socks"]
+name = "blocking-dispatcher"
+required-features = ["blocking-dispatcher", "socks"]
 
 [[example]]
-name = "client"
-required-features = ["async", "socks"]
+name = "async-dispatcher"
+required-features = ["async-dispatcher", "socks"]
 
 [[example]]
-name = "blocking-subscribing"
-required-features = ["blocking-subscribing"]
+name = "blocking-subscriber"
+required-features = ["blocking-subscriber"]
 
 [[example]]
-name = "async-subscribing"
-required-features = ["async-subscribing"]
+name = "async-subscriber"
+required-features = ["async-subscriber"]
 
 [profile.release]
 lto = true

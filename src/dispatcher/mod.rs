@@ -3,20 +3,19 @@
 
 use url::Url;
 
-#[cfg(feature = "async")]
+#[cfg(feature = "async-dispatcher")]
 mod r#async;
-#[cfg(feature = "blocking")]
+#[cfg(feature = "blocking-dispatcher")]
 mod blocking;
 pub mod builder;
 
-#[cfg(feature = "async")]
+#[cfg(feature = "async-dispatcher")]
 pub use self::r#async::Async;
-#[cfg(feature = "blocking")]
+#[cfg(feature = "blocking-dispatcher")]
 pub use self::blocking::Blocking;
 pub use self::builder::DispatcherBuilder;
 use crate::auth::Auth;
 use crate::error::Error;
-#[cfg(any(feature = "async", feature = "blocking"))]
 use crate::payload::Payload;
 
 /// Creates a [`DispatcherBuilder`]
@@ -62,7 +61,7 @@ where
     }
 }
 
-#[cfg(feature = "async")]
+#[cfg(feature = "async-dispatcher")]
 impl Dispatcher<Async> {
     /// Send payload to ntfy server
     #[inline]
@@ -71,7 +70,7 @@ impl Dispatcher<Async> {
     }
 }
 
-#[cfg(feature = "blocking")]
+#[cfg(feature = "blocking-dispatcher")]
 impl Dispatcher<Blocking> {
     /// Send payload to ntfy server
     #[inline]
