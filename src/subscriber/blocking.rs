@@ -1,7 +1,7 @@
 use std::net::TcpStream;
 
 use tungstenite::client::connect;
-use tungstenite::protocol::WebSocket;
+use tungstenite::protocol::{Message, WebSocket};
 use tungstenite::stream::MaybeTlsStream;
 use url::Url;
 
@@ -52,17 +52,20 @@ impl Iterator for MessageStream {
             return None;
         }
 
-        let message = match self.socket.read() {
-            Ok(message) => message,
-            Err(error) => return Some(Err(Error::from(error))),
+        let text_message = loop {
+            let message = match self.socket.read() {
+                Ok(message) => message,
+                Err(error) => return Some(Err(Error::from(error))),
+            };
+
+            match message {
+                Message::Close(_) => return None,
+                Message::Text(text_message) => break text_message,
+                _ => {}
+            }
         };
 
-        let text_message = match message.to_text() {
-            Ok(text_message) => text_message,
-            Err(error) => return Some(Err(Error::from(error))),
-        };
-
-        match serde_json::from_str(text_message) {
+        match serde_json::from_str(text_message.as_str()) {
             Ok(received_message) => Some(Ok(received_message)),
             Err(error) => Some(Err(Error::from(error))),
         }

@@ -4,6 +4,7 @@ use std::task::{Context, Poll};
 use futures_util::stream::{FusedStream, Stream, StreamExt};
 use tokio::net::TcpStream;
 use tokio_tungstenite::{MaybeTlsStream, WebSocketStream, connect_async};
+use tungstenite::protocol::Message;
 use url::Url;
 
 use super::builder::SubscriberBuilder;
@@ -46,19 +47,22 @@ impl Stream for MessageStream {
             return Poll::Ready(None);
         }
 
-        let message = match self.socket.poll_next_unpin(cx) {
-            Poll::Pending => return Poll::Pending,
-            Poll::Ready(Some(Ok(message))) => message,
-            Poll::Ready(Some(Err(error))) => return Poll::Ready(Some(Err(Error::from(error)))),
-            Poll::Ready(None) => return Poll::Ready(None),
+        let text_message = loop {
+            let message = match self.socket.poll_next_unpin(cx) {
+                Poll::Pending => return Poll::Pending,
+                Poll::Ready(Some(Ok(message))) => message,
+                Poll::Ready(Some(Err(error))) => return Poll::Ready(Some(Err(Error::from(error)))),
+                Poll::Ready(None) => return Poll::Ready(None),
+            };
+
+            match message {
+                Message::Close(_) => return Poll::Ready(None),
+                Message::Text(text_message) => break text_message,
+                _ => {}
+            }
         };
 
-        let text_message = match message.to_text() {
-            Ok(text_message) => text_message,
-            Err(error) => return Poll::Ready(Some(Err(Error::from(error)))),
-        };
-
-        match serde_json::from_str(text_message) {
+        match serde_json::from_str(text_message.as_str()) {
             Ok(received_message) => Poll::Ready(Some(Ok(received_message))),
             Err(error) => Poll::Ready(Some(Err(Error::from(error)))),
         }
